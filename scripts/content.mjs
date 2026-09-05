@@ -36,12 +36,20 @@ export function validateCount(count, kind) {
 }
 export function validateSource(source) {
   const verifiedLinks = {
-    'targhib:662': 'https://dorar.net/h/aNzgr7xS',
+    'targhib:661': ['https://dorar.net/h/g1qjT5BF'],
+    'nataij:2/401': ['https://dorar.net/h/h40g96Mj?osoul=1'],
+    'muslim:2723b': [
+      'https://sunnah.com/muslim:2723b',
+      'https://binwahaf.com/ar/audio-book-lesson/1117/',
+    ],
     // Sunnah.com hosts these two narration numbers on one page.
-    'muslim:2709a': 'https://sunnah.com/muslim:2708b',
+    'muslim:2709a': ['https://sunnah.com/muslim:2708b'],
   };
   if (Object.hasOwn(verifiedLinks, source.source)) {
-    assert.equal(source.url, verifiedLinks[source.source]);
+    assert.ok(
+      verifiedLinks[source.source].includes(source.url),
+      'Unverified source destination',
+    );
   } else {
     assert.match(source.source, /^(bukhari|muslim|abudawud):\d+[a-z]?$/);
     assert.equal(source.url, `https://sunnah.com/${source.source}`);

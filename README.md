@@ -35,6 +35,9 @@ BASE_PATH=/zaadi npm run preview
 - After-prayer and bedtime collections are selected manually, never inferred from time.
 - Swipe right for next / left for previous. Visible labelled arrow buttons and keyboard
   Left/Right are alternatives. Vertical scroll, selection and multitouch do not navigate.
+- Tab moves through controls. Left/Right work from the page; Home/End jump to the first/last
+  item and Enter counts when the text is focused. Escape closes panels and restores focus.
+  Settings include an Arabic keyboard guide; shortcuts respect text selection and editing.
 - Text fits between 18–42px at default size; user scale is 80–160%, with an absolute
   16px minimum. Large or long text scrolls. Short landscape windows allow page scrolling.
   Native browser zoom remains enabled.
@@ -45,7 +48,7 @@ BASE_PATH=/zaadi npm run preview
 
 ## Content and structure
 
-17 reading cards across five collections. This is a verified selection, not an exhaustive
+29 reading cards (16 morning, 15 evening; some cards belong to multiple collections) across five collections. This is a verified selection, not an exhaustive
 book of adhkar. Text, attribution, authenticity and count context are stored separately.
 
 ```text
@@ -71,7 +74,7 @@ Adhan.js, local Cairo/Amiri fonts, and the scaffold's Lucide icons.
 
 Read [AGENTS.md](AGENTS.md) and [the content policy](docs/content-policy.md) before
 editing texts, repetitions or timing. Qur'an is resolved from the unchanged Tanzil corpus.
-Hadith texts and counts were checked against specific Sunnah.com pages; the UI links
+Hadith texts and counts were checked against specific Sunnah.com, Dorar, and the Hisn al-Muslim author’s pages; the UI links
 back to each narration and labels its grade. Do not alter variant wording while retaining
 the old citation. Pinned sources are excluded from formatting.
 

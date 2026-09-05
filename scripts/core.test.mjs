@@ -164,12 +164,12 @@ test('exceptional source links retain exact narration identity and trusted desti
   );
   assert.doesNotThrow(() =>
     validateSource({
-      source: 'targhib:662',
-      url: 'https://dorar.net/h/aNzgr7xS',
+      source: 'targhib:661',
+      url: 'https://dorar.net/h/g1qjT5BF',
     }),
   );
   assert.throws(() =>
-    validateSource({ source: 'targhib:662', url: 'https://example.com/' }),
+    validateSource({ source: 'targhib:661', url: 'https://example.com/' }),
   );
   assert.throws(() =>
     validateSource({

@@ -236,6 +236,234 @@
       "url": "https://sunnah.com/bukhari:6406",
       "inspectedAt": "2026-09-05",
       "quoteScope": "Complete supplication or relevant Quran reference within a longer narration; editorial titles/context are not hadith."
+    },
+    {
+      "id": "timed-tasbih",
+      "title": "سبحان الله وبحمده",
+      "groups": [
+        "morning",
+        "evening"
+      ],
+      "text": "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
+      "source": "muslim:2692",
+      "narrator": "أبو هريرة",
+      "grade": "صحيح؛ رواه مسلم",
+      "count": 100,
+      "countKind": "explicit",
+      "context": "مئة مرة حين يصبح ومئة مرة حين يمسي. يختلف هذا السياق عن ذكر المئة في اليوم عمومًا.",
+      "url": "https://sunnah.com/muslim:2692",
+      "inspectedAt": "2026-09-05",
+      "quoteScope": "Complete supplication within a longer narration; titles and context are editorial."
+    },
+    {
+      "id": "wellbeing-protection",
+      "title": "العفو والعافية",
+      "groups": [
+        "morning",
+        "evening"
+      ],
+      "text": "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَافِيَةَ فِي الدُّنْيَا وَالآخِرَةِ اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي دِينِي وَدُنْيَاىَ وَأَهْلِي وَمَالِي اللَّهُمَّ اسْتُرْ عَوْرَاتِي وَآمِنْ رَوْعَاتِي اللَّهُمَّ احْفَظْنِي مِنْ بَيْنِ يَدَىَّ وَمِنْ خَلْفِي وَعَنْ يَمِينِي وَعَنْ شِمَالِي وَمِنْ فَوْقِي وَأَعُوذُ بِعَظَمَتِكَ أَنْ أُغْتَالَ مِنْ تَحْتِي",
+      "source": "abudawud:5074",
+      "narrator": "عبد الله بن عمر",
+      "grade": "صحيح؛ صححه الألباني",
+      "count": 1,
+      "countKind": "single-recitation",
+      "context": "لم يكن النبي صلى الله عليه وسلم يدع هذه الدعوات حين يمسي وحين يصبح. لا عدد مكرر منصوص.",
+      "url": "https://sunnah.com/abudawud:5074",
+      "inspectedAt": "2026-09-05",
+      "quoteScope": "Complete supplication within a longer narration; titles and context are editorial.",
+      "note": "Uses Uthman ibn Abi Shayba variant عوراتي explicitly recorded in same narration. First sentence has العافية only, not العفو والعافية. Full prayer, do not split count."
+    },
+    {
+      "id": "body-health",
+      "title": "العافية في البدن",
+      "groups": [
+        "morning",
+        "evening"
+      ],
+      "text": "اللَّهُمَّ عَافِنِي فِي بَدَنِي اللَّهُمَّ عَافِنِي فِي سَمْعِي اللَّهُمَّ عَافِنِي فِي بَصَرِي لاَ إِلَهَ إِلاَّ أَنْتَ",
+      "source": "abudawud:5090",
+      "narrator": "أبو بكرة",
+      "grade": "حسن الإسناد؛ الألباني",
+      "count": 3,
+      "countKind": "explicit",
+      "context": "ثلاث مرات حين يصبح وثلاث حين يمسي، كما رواه عبد الرحمن عن أبيه أبي بكرة.",
+      "url": "https://sunnah.com/abudawud:5090",
+      "inspectedAt": "2026-09-05",
+      "quoteScope": "Complete supplication within a longer narration; titles and context are editorial."
+    },
+    {
+      "id": "refuge-disbelief",
+      "title": "الاستعاذة من الكفر والفقر",
+      "groups": [
+        "morning",
+        "evening"
+      ],
+      "text": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْكُفْرِ وَالْفَقْرِ اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ عَذَابِ الْقَبْرِ لاَ إِلَهَ إِلاَّ أَنْتَ",
+      "source": "abudawud:5090",
+      "narrator": "أبو بكرة",
+      "grade": "حسن الإسناد؛ الألباني",
+      "count": 3,
+      "countKind": "explicit",
+      "context": "ثلاث مرات حين يصبح وثلاث حين يمسي. ورد هذا الدعاء في زيادة العباس في الرواية نفسها.",
+      "url": "https://sunnah.com/abudawud:5090",
+      "inspectedAt": "2026-09-05",
+      "quoteScope": "Complete supplication within a longer narration; titles and context are editorial.",
+      "note": "Distinct complete prayer in narrator Abbas version; separate from body-health. Later دعوات المكروب in same page is NOT timed morning/evening."
+    },
+    {
+      "id": "creator-refuge",
+      "title": "فاطر السماوات والأرض",
+      "groups": [
+        "morning",
+        "evening",
+        "sleep"
+      ],
+      "text": "اللَّهُمَّ فَاطِرَ السَّمَوَاتِ وَالأَرْضِ عَالِمَ الْغَيْبِ وَالشَّهَادَةِ رَبَّ كُلِّ شَىْءٍ وَمَلِيكَهُ أَشْهَدُ أَنْ لاَ إِلَهَ إِلاَّ أَنْتَ أَعُوذُ بِكَ مِنْ شَرِّ نَفْسِي وَشَرِّ الشَّيْطَانِ وَشِرْكِهِ",
+      "source": "abudawud:5067",
+      "narrator": "أبو هريرة، في تعليم أبي بكر الصديق",
+      "grade": "صحيح؛ صححه الألباني",
+      "count": 1,
+      "countKind": "single-recitation",
+      "context": "أمر بقوله إذا أصبح وإذا أمسى وإذا أخذ مضجعه. لا عدد مكرر منصوص.",
+      "url": "https://sunnah.com/abudawud:5067",
+      "inspectedAt": "2026-09-05",
+      "quoteScope": "Complete supplication within a longer narration; titles and context are editorial.",
+      "note": "Exact AD5067 version: do not append وأن أقترف from another narration or reorder opening while using this citation."
+    },
+    {
+      "id": "timed-tahlil",
+      "title": "لا إله إلا الله وحده",
+      "groups": [
+        "morning",
+        "evening"
+      ],
+      "text": "لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَىْءٍ قَدِيرٌ",
+      "source": "abudawud:5077",
+      "narrator": "أبو عياش",
+      "grade": "صحيح؛ صححه الألباني",
+      "count": 1,
+      "countKind": "single-recitation",
+      "context": "يقال إذا أصبح وإذا أمسى. لا تنص هذه الرواية على تكراره عشر مرات.",
+      "url": "https://sunnah.com/abudawud:5077",
+      "inspectedAt": "2026-09-05",
+      "quoteScope": "Complete supplication within a longer narration; titles and context are editorial.",
+      "note": "Use single recitation. Ten in matn refers to good deeds/erased sins/degrees, not repetition. Source has naming variants Ibn Abi Aish/Abu Ayyash; displayed narrator matches Hammad wording."
+    },
+    {
+      "id": "morning-creation-praise",
+      "title": "عدد خلقه",
+      "groups": [
+        "morning"
+      ],
+      "text": "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ عَدَدَ خَلْقِهِ وَرِضَا نَفْسِهِ وَزِنَةَ عَرْشِهِ وَمِدَادَ كَلِمَاتِهِ",
+      "source": "muslim:2726a",
+      "narrator": "جويرية بنت الحارث",
+      "grade": "صحيح؛ رواه مسلم",
+      "count": 3,
+      "countKind": "explicit",
+      "context": "قالها النبي صلى الله عليه وسلم ثلاث مرات في أول النهار، كما في حديث جويرية.",
+      "url": "https://sunnah.com/muslim:2726a",
+      "inspectedAt": "2026-09-05",
+      "quoteScope": "Complete supplication within a longer narration; titles and context are editorial.",
+      "note": "Morning event verified. Do not make it evening-specific. Preserve suffix2726a."
+    },
+    {
+      "id": "evening-perfect-words",
+      "title": "كلمات الله التامات",
+      "groups": [
+        "evening"
+      ],
+      "text": "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
+      "source": "muslim:2709a",
+      "narrator": "أبو هريرة",
+      "grade": "صحيح؛ رواه مسلم",
+      "count": 1,
+      "countKind": "single-recitation",
+      "context": "دل الحديث على قولها حين يمسي. لا عدد مكرر منصوص في رواية مسلم هذه.",
+      "url": "https://sunnah.com/muslim:2708b",
+      "inspectedAt": "2026-09-05",
+      "quoteScope": "Complete supplication within a longer narration; titles and context are editorial.",
+      "note": "Sunnah groups Muslim2708b,2709a on URL2708b; evening part narrated by Abu Huraira is second narration. Do not label count3 with this reference; a separate Tirmidhi version would need verification."
+    },
+    {
+      "id": "living-sustainer",
+      "title": "يا حي يا قيوم",
+      "groups": [
+        "morning",
+        "evening"
+      ],
+      "text": "يا حي يا قيوم برحمتك أستغيث، أصلح لي شأني كله، ولا تكلني إلى نفسي طرفة عين",
+      "source": "targhib:661",
+      "narrator": "أنس بن مالك",
+      "grade": "حسن؛ حسنه الألباني في صحيح الترغيب",
+      "count": 1,
+      "countKind": "single-recitation",
+      "context": "وصية لفاطمة رضي الله عنها أن تقول هذا الدعاء إذا أصبحت وإذا أمست. لا عدد مكرر منصوص.",
+      "url": "https://dorar.net/h/g1qjT5BF",
+      "inspectedAt": "2026-09-05",
+      "quoteScope": "Complete supplication within a longer narration; titles and context are editorial.",
+      "note": "Direct Dorar record verifies complete formula and both timings; no appended أبدا.",
+      "additionalUrls": [
+        "https://binwahaf.com/ar/audio-book-lesson/1128/"
+      ]
+    },
+    {
+      "id": "morning-fitrah",
+      "title": "فطرة الإسلام",
+      "groups": [
+        "morning"
+      ],
+      "text": "أصبَحْنا على فِطرةِ الإسلامِ، وكلمةِ الإخلاصِ، ودِينِ نبيِّنا مُحمَّدٍ، ومِلَّةِ أبينا إبراهيمَ حنيفًا مُسلِمًا، وما أنا مِن المُشرِكينَ.",
+      "source": "nataij:2/401",
+      "narrator": "عبد الرحمن بن أبزى",
+      "grade": "حسن؛ حسنه ابن حجر العسقلاني",
+      "count": 1,
+      "countKind": "single-recitation",
+      "context": "ورد قوله إذا أصبح. لا عدد مكرر منصوص.",
+      "url": "https://dorar.net/h/h40g96Mj?osoul=1",
+      "inspectedAt": "2026-09-05",
+      "quoteScope": "Complete supplication within a longer narration; titles and context are editorial.",
+      "note": "Exact graded wording in Nataij al-Afkar2/401 and Nasai9743. Preserve أنا and omit extra وعلى of other versions. Morning only."
+    },
+    {
+      "id": "evening-kingdom",
+      "title": "أمسينا وأمسى الملك لله",
+      "groups": [
+        "evening"
+      ],
+      "text": "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ وَالْحَمْدُ لِلَّهِ لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَىْءٍ قَدِيرٌ رَبِّ أَسْأَلُكَ خَيْرَ مَا فِي هَذِهِ اللَّيْلَةِ وَخَيْرَ مَا بَعْدَهَا وَأَعُوذُ بِكَ مِنْ شَرِّ مَا فِي هَذِهِ اللَّيْلَةِ وَشَرِّ مَا بَعْدَهَا رَبِّ أَعُوذُ بِكَ مِنَ الْكَسَلِ وَسُوءِ الْكِبَرِ رَبِّ أَعُوذُ بِكَ مِنْ عَذَابٍ فِي النَّارِ وَعَذَابٍ فِي الْقَبْرِ",
+      "source": "muslim:2723b",
+      "narrator": "عبد الله بن مسعود",
+      "grade": "صحيح؛ رواه مسلم",
+      "count": 1,
+      "countKind": "single-recitation",
+      "context": "من دعائه صلى الله عليه وسلم إذا أمسى. لا عدد مكرر منصوص.",
+      "url": "https://sunnah.com/muslim:2723b",
+      "inspectedAt": "2026-09-05",
+      "quoteScope": "Complete supplication within a longer narration; titles and context are editorial.",
+      "note": "Full evening prayer from Muslim2723b; narrator says أراه قال فيهن before له الملك... (record uncertainty in scholarly detail if desired); parallel Muslim2723a confirms phrase with different prayer wording. Do not claim there is no narrator variation."
+    },
+    {
+      "id": "morning-kingdom",
+      "title": "أصبحنا وأصبح الملك لله",
+      "groups": [
+        "morning"
+      ],
+      "text": "أصبحنا وأصبح الملك لله، والحمد لله، لا إله إلا الله وحده لا شريك له، له الملك وله الحمد، وهو على كل شيءٍ قديرٌ. ربِّ أسألك خير ما في هذا اليوم، وخير ما بعده، وأعوذ بك من شر ما في هذا اليوم، وشر ما بعده، ربِّ أعوذ بك من الكسل وسوء الكِبَر، ربِّ أعوذ بك من عذابٍ في النار وعذابٍ في القبر",
+      "source": "muslim:2723b",
+      "narrator": "عبد الله بن مسعود",
+      "grade": "صحيح؛ رواه مسلم",
+      "count": 1,
+      "countKind": "single-recitation",
+      "context": "ذكر مسلم صيغة الصباح إجمالًا بعد صيغة المساء، ويعرض حصن المسلم صيغة الصباح كاملة مع بيان اختلاف ألفاظ المساء. لا عدد مكرر منصوص.",
+      "url": "https://binwahaf.com/ar/audio-book-lesson/1117/",
+      "inspectedAt": "2026-09-05",
+      "quoteScope": "Complete supplication within a longer narration; titles and context are editorial.",
+      "note": "Morning wording explicitly displayed in inspected Hisn al-Muslim77 author website, with Muslim2723 reference. This is the full expanded morning form, not a falsely claimed literal continuous quotation in Sunnah2723b.",
+      "additionalUrls": [
+        "https://sunnah.com/muslim:2723b"
+      ]
     }
   ],
   "globalNotes": [
@@ -246,5 +474,30 @@
     "Do not call the selections exhaustive or scholar-reviewed.",
     "Current-clock category suggestion is UX, not evidence that the Sunnah stipulates exact clock boundaries.",
     "Quran must come from a licensed checksum-pinned corpus, not this research or AI memory."
-  ]
+  ],
+  "expansionReview": {
+    "date": "2026-09-05",
+    "notes": [
+      "Added independently inspected timed prayers; did not target a fixed collection size.",
+      "Morning/evening Kursi deferred: Targhib662 grades sound but Silsilah7/743 calls timing addition anomalous. Bedtime Kursi remains."
+    ],
+    "excluded": [
+      {
+        "source": "abudawud:5073",
+        "reason": "ما أصبح بي من نعمة graded ضعيف by Albani on inspected page; do not silently label sahih."
+      },
+      {
+        "source": "abudawud:5083",
+        "reason": "Long plural فاطر variant graded ضعيف on inspected page; use sahih5067."
+      },
+      {
+        "source": "tirmidhi:3389 / ibnmajah:3870",
+        "reason": "رضيت بالله has variant grade/timing/count differences; not included without further reconciliation."
+      },
+      {
+        "source": "https://dorar.net/h/UA2ZPwXk",
+        "reason": "Conflicting grading for morning/evening timing addition; deferred pending qualified review."
+      }
+    ]
+  }
 }

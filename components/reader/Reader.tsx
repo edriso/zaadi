@@ -693,7 +693,7 @@ export function Reader() {
               target="_blank"
               rel="noreferrer"
             >
-              اقرأ الرواية كاملة{' '}
+              اقرأ المصدر والتخريج{' '}
               <span>
                 {
                   (
@@ -702,6 +702,7 @@ export function Reader() {
                       muslim: 'صحيح مسلم',
                       abudawud: 'سنن أبي داود',
                       targhib: 'صحيح الترغيب · الدرر السنية',
+                      nataij: 'نتائج الأفكار · الدرر السنية',
                     } as Record<string, string>
                   )[item.source.split(':')[0]]
                 }{' '}

@@ -27,3 +27,20 @@ Locations are optional and stored on the device only. A chosen city supplies coo
 and its IANA timezone; calculations use the city's calendar date, not an assumed device
 calendar date. Invalid/high-latitude solar events trigger a labelled approximate fallback.
 Counts are a reading aid, not a record of spiritual achievement or proof of recitation.
+
+## Collection coverage and variant review
+
+The morning/evening collections are selected readings, not a fixed religious checklist.
+The card count depends on the selected narrations and whether separate prayers/surahs
+have separate reading cards. Never add texts just to reach a requested numerical total.
+
+Additional source destinations are individually allowlisted in scripts/content.mjs.
+Sunnah.com combines Muslim2709a with2708b at the2708b URL; preserve the actual narration
+number2709a for the evening text. Morning Muslim2723 is expanded explicitly in Hisn
+al-Muslim; the displayed context explains this, and the link points to the author's page.
+Dorar entries preserve the named scholar's grade and exact quoted variant.
+
+Deferred records are documented in data/sources.json. Morning/evening Ayat al-Kursi has
+conflicting grading for the timing addition (Dorar aNzgr7xS and UA2ZPwXk); it is not added
+pending qualified review. The existing bedtime reading remains supported by Bukhari2311.
+This selection does not rule on a reader's practice or claim consensus on grading.
