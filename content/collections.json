@@ -1,0 +1,32 @@
+[
+  {
+    "id": "morning",
+    "title": "أذكار الصباح",
+    "description": "بداية يومك بذكر الله",
+    "icon": "sunrise"
+  },
+  {
+    "id": "evening",
+    "title": "أذكار المساء",
+    "description": "سكون المساء وطمأنينة الذكر",
+    "icon": "sunset"
+  },
+  {
+    "id": "prayer",
+    "title": "بعد الصلاة",
+    "description": "أذكار بعد الفراغ من الصلاة المفروضة",
+    "icon": "prayer"
+  },
+  {
+    "id": "sleep",
+    "title": "قبل النوم",
+    "description": "اقرأها حين تأوي إلى فراشك",
+    "icon": "moon"
+  },
+  {
+    "id": "general",
+    "title": "أذكار عامة",
+    "description": "ذكر الله في سعة يومك",
+    "icon": "spark"
+  }
+]

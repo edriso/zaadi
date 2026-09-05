@@ -1,0 +1,250 @@
+{
+  "items": [
+    {
+      "id": "sayyid-istighfar",
+      "title": "سيد الاستغفار",
+      "groups": [
+        "morning",
+        "evening"
+      ],
+      "text": "اللَّهُمَّ أَنْتَ رَبِّي، لاَ إِلَهَ إِلاَّ أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَىَّ وَأَبُوءُ لَكَ بِذَنْبِي، فَاغْفِرْ لِي، فَإِنَّهُ لاَ يَغْفِرُ الذُّنُوبَ إِلاَّ أَنْتَ",
+      "source": "bukhari:6306",
+      "narrator": "شداد بن أوس",
+      "grade": "صحيح؛ رواه البخاري",
+      "count": 1,
+      "countKind": "single-recitation",
+      "context": "ورد قوله في النهار وفي الليل مع اليقين به. لا تحدد الرواية ساعة البداية أو النهاية بالدقائق، ولا تنص على عدد مكرر.",
+      "note": "Complete supplication excerpt from longer hadith; do not imply saying it mechanically is the entire condition of reward.",
+      "url": "https://sunnah.com/bukhari:6306",
+      "inspectedAt": "2026-09-05",
+      "quoteScope": "Complete supplication or relevant Quran reference within a longer narration; editorial titles/context are not hadith."
+    },
+    {
+      "id": "bismillah-protection",
+      "title": "بسم الله",
+      "groups": [
+        "morning",
+        "evening"
+      ],
+      "text": "بِسْمِ اللَّهِ الَّذِي لاَ يَضُرُّ مَعَ اسْمِهِ شَىْءٌ فِي الأَرْضِ وَلاَ فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ",
+      "source": "abudawud:5088",
+      "narrator": "عثمان بن عفان",
+      "grade": "صحيح؛ صححه الألباني",
+      "count": 3,
+      "countKind": "explicit",
+      "context": "نصت الرواية على ثلاث مرات حين يصبح وثلاث حين يمسي.",
+      "url": "https://sunnah.com/abudawud:5088",
+      "inspectedAt": "2026-09-05",
+      "quoteScope": "Complete supplication or relevant Quran reference within a longer narration; editorial titles/context are not hadith."
+    },
+    {
+      "id": "morning-by-you",
+      "title": "بك أصبحنا",
+      "groups": [
+        "morning"
+      ],
+      "text": "اللَّهُمَّ بِكَ أَصْبَحْنَا وَبِكَ أَمْسَيْنَا وَبِكَ نَحْيَا وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ",
+      "source": "abudawud:5068",
+      "narrator": "أبو هريرة",
+      "grade": "صحيح؛ صححه الألباني",
+      "count": 1,
+      "countKind": "single-recitation",
+      "context": "كان يقول إذا أصبح؛ لا عدد مكرر منصوص في هذه الرواية.",
+      "url": "https://sunnah.com/abudawud:5068",
+      "inspectedAt": "2026-09-05",
+      "quoteScope": "Complete supplication or relevant Quran reference within a longer narration; editorial titles/context are not hadith."
+    },
+    {
+      "id": "evening-by-you",
+      "title": "بك أمسينا",
+      "groups": [
+        "evening"
+      ],
+      "text": "اللَّهُمَّ بِكَ أَمْسَيْنَا وَبِكَ نَحْيَا وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ",
+      "source": "abudawud:5068",
+      "narrator": "أبو هريرة",
+      "grade": "صحيح؛ صححه الألباني",
+      "count": 1,
+      "countKind": "single-recitation",
+      "context": "كان يقول إذا أمسى؛ لا عدد مكرر منصوص في هذه الرواية.",
+      "note": "Exact Abu Dawud 5068 evening version. It omits وبك أصبحنا and ends النشور. Do not replace with another version while keeping this citation.",
+      "url": "https://sunnah.com/abudawud:5068",
+      "inspectedAt": "2026-09-05",
+      "quoteScope": "Complete supplication or relevant Quran reference within a longer narration; editorial titles/context are not hadith."
+    },
+    {
+      "id": "three-surahs",
+      "title": "الإخلاص والفلق والناس",
+      "groups": [
+        "morning",
+        "evening"
+      ],
+      "quranRefs": [
+        "112:1-4",
+        "113:1-5",
+        "114:1-6"
+      ],
+      "source": "abudawud:5082",
+      "narrator": "عبد الله بن خبيب",
+      "grade": "حسن؛ حسنه الألباني",
+      "count": 3,
+      "countKind": "explicit",
+      "context": "تقرأ كل سورة ثلاث مرات حين تصبح وحين تمسي.",
+      "note": "Reference-only Quran; load full exact surah texts from pinned Quran corpus. Can split into three cards each with count3, but do not imply a mandatory order beyond the narration.",
+      "url": "https://sunnah.com/abudawud:5082",
+      "inspectedAt": "2026-09-05",
+      "quoteScope": "Complete supplication or relevant Quran reference within a longer narration; editorial titles/context are not hadith."
+    },
+    {
+      "id": "post-prayer-istighfar",
+      "title": "الاستغفار",
+      "groups": [
+        "prayer"
+      ],
+      "text": "أَسْتَغْفِرُ اللَّهَ",
+      "source": "muslim:591",
+      "narrator": "ثوبان",
+      "grade": "صحيح؛ رواه مسلم",
+      "count": 3,
+      "countKind": "explicit",
+      "context": "إذا انصرف من صلاته استغفر ثلاثًا.",
+      "note": "أستغفر الله form is the explanation by al-Awzai in the same narration, not a verbatim quote attributed directly to the Prophet. Mention this in source details.",
+      "url": "https://sunnah.com/muslim:591",
+      "inspectedAt": "2026-09-05",
+      "quoteScope": "Complete supplication or relevant Quran reference within a longer narration; editorial titles/context are not hadith."
+    },
+    {
+      "id": "post-prayer-salam",
+      "title": "أنت السلام",
+      "groups": [
+        "prayer"
+      ],
+      "text": "اللَّهُمَّ أَنْتَ السَّلاَمُ وَمِنْكَ السَّلاَمُ تَبَارَكْتَ ذَا الْجَلاَلِ وَالإِكْرَامِ",
+      "source": "muslim:591",
+      "narrator": "ثوبان",
+      "grade": "صحيح؛ رواه مسلم",
+      "count": 1,
+      "countKind": "single-recitation",
+      "context": "يقال بعد الاستغفار عند الانصراف من الصلاة. الثلاث في الحديث للاستغفار، وليست لهذا الدعاء.",
+      "note": "Exact wording is ذا not يا ذا.",
+      "url": "https://sunnah.com/muslim:591",
+      "inspectedAt": "2026-09-05",
+      "quoteScope": "Complete supplication or relevant Quran reference within a longer narration; editorial titles/context are not hadith."
+    },
+    {
+      "id": "post-prayer-tasbih",
+      "title": "التسبيح والتحميد والتكبير",
+      "groups": [
+        "prayer"
+      ],
+      "segments": [
+        {
+          "text": "سُبْحَانَ اللَّهِ",
+          "count": 33
+        },
+        {
+          "text": "الْحَمْدُ لِلَّهِ",
+          "count": 33
+        },
+        {
+          "text": "اللَّهُ أَكْبَرُ",
+          "count": 33
+        },
+        {
+          "text": "لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَىْءٍ قَدِيرٌ",
+          "count": 1
+        }
+      ],
+      "source": "muslim:597a",
+      "narrator": "أبو هريرة",
+      "grade": "صحيح؛ رواه مسلم",
+      "countKind": "explicit",
+      "context": "بعد الصلاة: التسبيح ٣٣، والتحميد ٣٣، والتكبير ٣٣، ثم التهليل مرة ليتم المئة.",
+      "note": "Do not attach 33 to the whole four-part block. First three formulas express narrated actions سبح حمد كبر, rather than separate direct quotations in matn. Preserve number suffix597a.",
+      "url": "https://sunnah.com/muslim:597a",
+      "inspectedAt": "2026-09-05",
+      "quoteScope": "Complete supplication or relevant Quran reference within a longer narration; editorial titles/context are not hadith."
+    },
+    {
+      "id": "bedtime-name",
+      "title": "باسمك اللهم",
+      "groups": [
+        "sleep"
+      ],
+      "text": "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
+      "source": "bukhari:6324",
+      "narrator": "حذيفة بن اليمان",
+      "grade": "صحيح؛ رواه البخاري",
+      "count": 1,
+      "countKind": "single-recitation",
+      "context": "كان يقول إذا أراد أن ينام؛ لا عدد مكرر منصوص.",
+      "url": "https://sunnah.com/bukhari:6324",
+      "inspectedAt": "2026-09-05",
+      "quoteScope": "Complete supplication or relevant Quran reference within a longer narration; editorial titles/context are not hadith."
+    },
+    {
+      "id": "bedtime-kursi",
+      "title": "آية الكرسي",
+      "groups": [
+        "sleep"
+      ],
+      "quranRefs": [
+        "2:255"
+      ],
+      "source": "bukhari:2311",
+      "narrator": "أبو هريرة",
+      "grade": "صحيح؛ رواه البخاري",
+      "count": 1,
+      "countKind": "single-recitation",
+      "context": "عند الذهاب إلى الفراش تقرأ آية الكرسي كاملة. أقر النبي صلى الله عليه وسلم صدق الخبر في القصة.",
+      "note": "Do not copy only the initial Quran phrase from the hadith: full verse required.",
+      "url": "https://sunnah.com/bukhari:2311",
+      "inspectedAt": "2026-09-05",
+      "quoteScope": "Complete supplication or relevant Quran reference within a longer narration; editorial titles/context are not hadith."
+    },
+    {
+      "id": "daily-tasbih",
+      "title": "سبحان الله وبحمده",
+      "groups": [
+        "general"
+      ],
+      "text": "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
+      "source": "bukhari:6405",
+      "narrator": "أبو هريرة",
+      "grade": "صحيح؛ رواه البخاري",
+      "count": 100,
+      "countKind": "explicit",
+      "context": "مئة مرة في اليوم؛ لا تنسب لهذا المرجع تخصيصه بالصباح وحده أو المساء وحده.",
+      "url": "https://sunnah.com/bukhari:6405",
+      "inspectedAt": "2026-09-05",
+      "quoteScope": "Complete supplication or relevant Quran reference within a longer narration; editorial titles/context are not hadith."
+    },
+    {
+      "id": "two-phrases",
+      "title": "كلمتان خفيفتان",
+      "groups": [
+        "general"
+      ],
+      "text": "سُبْحَانَ اللَّهِ الْعَظِيمِ، سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
+      "source": "bukhari:6406",
+      "narrator": "أبو هريرة",
+      "grade": "صحيح؛ رواه البخاري",
+      "count": null,
+      "countKind": "unrestricted",
+      "context": "لا وقت ولا عدد محدد في هذه الرواية.",
+      "note": "Keep unlimited: do not display a religious target of1/3/100. Order preserved from this exact narration.",
+      "url": "https://sunnah.com/bukhari:6406",
+      "inspectedAt": "2026-09-05",
+      "quoteScope": "Complete supplication or relevant Quran reference within a longer narration; editorial titles/context are not hadith."
+    }
+  ],
+  "globalNotes": [
+    "All source pages opened and Arabic matn directly inspected, not only search snippets.",
+    "Ancient Arabic hadith wording is public-domain original; no modern translations copied.",
+    "Sahihayn grades reflect their collection; other grades explicitly supported by source page.",
+    "A single recitation count is reading guidance where no repeated count is specified; distinguish from a textually prescribed repetition count.",
+    "Do not call the selections exhaustive or scholar-reviewed.",
+    "Current-clock category suggestion is UX, not evidence that the Sunnah stipulates exact clock boundaries.",
+    "Quran must come from a licensed checksum-pinned corpus, not this research or AI memory."
+  ]
+}
