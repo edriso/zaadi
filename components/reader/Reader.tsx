@@ -326,7 +326,7 @@ export function Reader() {
         <button
           className="icon-button"
           aria-label="العودة إلى قائمة الأذكار"
-          aria-keyshortcuts="Alt+l"
+          aria-keyshortcuts="Escape"
           onClick={() => openPanel('list')}
         >
           <ArrowRight size={21} />
@@ -761,7 +761,7 @@ export function Reader() {
                 </button>
               )}
             </section>
-            <section className="setting-section">
+            <section className="setting-section keyboard-guide">
               <h3>لوحة المفاتيح</h3>
               <p className="small-note">
                 استخدم Tab للتنقّل بين الأزرار، وShift + Tab للعودة. افتح الزر
@@ -776,9 +776,9 @@ export function Reader() {
                 </div>
                 <div>
                   <dt>
-                    <kbd>Alt + L</kbd>
+                    <kbd>Esc</kbd>
                   </dt>
-                  <dd>فتح قائمة الأذكار</dd>
+                  <dd>فتح قائمة الأذكار؛ وإغلاق النافذة إن كانت مفتوحة</dd>
                 </div>
                 <div>
                   <dt>

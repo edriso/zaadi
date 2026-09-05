@@ -738,3 +738,9 @@ kbd {
   flex-wrap: wrap;
   gap: 4px 20px;
 }
+
+@media (max-width: 759px) {
+  .keyboard-guide {
+    display: none;
+  }
+}

@@ -49,8 +49,10 @@ BASE_PATH=/zaadi npm run preview
 - Optional “واجهة مختصرة” hides headings, supporting text, and navigation/read buttons,
   retaining the text, repetition count and settings button. Swipe and keyboard navigation
   remain available. Sources, collection selection and undo are available in settings.
-- Alt+S opens settings, Alt+L opens collections, and Alt+Z undoes the last reading
-  (Option on Mac). Shortcuts do not override dialogs, typing or text selection.
+- Alt+S opens settings, Escape opens collections, and Alt+Z undoes the last reading
+  (Option on Mac). Escape closes an open panel. Other shortcuts do not override dialogs,
+  typing or text selection. The keyboard guide appears at desktop widths (760px and up);
+  shortcuts still work with an external keyboard on smaller screens.
 - Settings offer light, dark, or system appearance. Theme is applied before first paint.
   Fonts preload before the reader appears; failed loading has a bounded, stable fallback.
 - Preferences stay in localStorage. Counts stay in memory only and reset when choosing

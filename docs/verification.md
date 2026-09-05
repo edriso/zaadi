@@ -2,7 +2,7 @@
 
 - Source researcher inspected the Arabic source pages and repetition contexts before
   data import. The pipeline verifies the pinned records and unmodified Quran corpus.
-- Twenty-four focused tests pass: time-window boundaries, local city calculations, invalid
+- Twenty-five focused tests pass: time-window boundaries, local city calculations, invalid
   stored settings, zoom bounds, swipe direction, ignored gestures, bounded navigation,
   narration suffixes, Quran ranges, unrestricted-count protection, keyboard guards, and
   exact allowlisted source destinations, theme migration, atomic count/advance/undo,
@@ -42,7 +42,7 @@
 
 - Minimal-mode checks: enabling the saved boolean hides supporting text and buttons
   from both view and the accessibility tree; the settings button and repetition count
-  remain. Refresh preserves the setting. Option+S/L/Z, text activation and arrow
+  remain. Refresh preserves the setting. Option+S/Z and Escape, text activation and arrow
   navigation work in desktop Brave. Sources open from settings with focus on Close.
   Invalid/legacy preferences and shortcut editing/modifier guards have focused tests.
 

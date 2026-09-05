@@ -45,7 +45,9 @@ Correctness, readable Arabic, and a quiet reading experience come first.
   hides supporting text/buttons, including Next/Previous, but retains the text, repetition
   count, and a 44px settings control. Settings must expose sources, undo and collections.
   Swipes and keyboard navigation keep working; hidden controls must leave the Tab order.
-  Alt+S/L/Z (Option on Mac) open settings/list or undo, outside dialogs and editing fields.
+  Alt+S/Z (Option on Mac) open settings or undo. Escape opens the collection list
+  while reading and closes any open panel; holding it must not reopen a closed panel.
+  Show the keyboard guide only at widths >=760px; shortcuts still work on smaller screens.
 - No invisible tap zones. Preserve the user's opt-in minimal boolean across refresh;
   older or invalid preferences default to the full interface.
 - Native dialog panels need a label, Escape/backdrop dismissal and focus restoration.

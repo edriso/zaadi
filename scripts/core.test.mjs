@@ -342,7 +342,6 @@ test('minimal mode is opt-in and accepts only a persisted boolean', () => {
 test('panel and undo shortcuts use physical Alt keys and respect input guards', () => {
   for (const [code, action] of [
     ['KeyS', 'settings'],
-    ['KeyL', 'list'],
     ['KeyZ', 'undo'],
   ]) {
     assert.equal(keyboardAction({ code, key: 'س', altKey: true }), action);
@@ -386,4 +385,21 @@ test('Space reads from the page or text without overriding other controls or scr
   assert.equal(state.index, 1);
   assert.equal(state.counts.one, 1);
   assert.equal(state.counts.three, 1);
+});
+
+test('Escape opens collections only outside dialogs and replaces Alt+L', () => {
+  assert.equal(keyboardAction({ key: 'Escape' }), 'list');
+  assert.equal(keyboardAction({ key: 'Escape' }, { reading: true }), 'list');
+  assert.equal(keyboardAction({ key: 'Escape' }, { blocked: true }), null);
+  for (const flag of [
+    'altKey',
+    'ctrlKey',
+    'metaKey',
+    'shiftKey',
+    'repeat',
+    'isComposing',
+    'defaultPrevented',
+  ])
+    assert.equal(keyboardAction({ key: 'Escape', [flag]: true }), null);
+  assert.equal(keyboardAction({ key: 'l', code: 'KeyL', altKey: true }), null);
 });
