@@ -12,12 +12,12 @@ import {
   ArrowLeft,
   ArrowRight,
   Check,
+  Heart,
   Minus,
   Moon,
   Plus,
   RotateCcw,
   SlidersHorizontal,
-  Sparkles,
   Sun,
   Sunrise,
   Sunset,
@@ -55,7 +55,7 @@ const icons: Record<string, typeof Sun> = {
   evening: Sunset,
   prayer: Sun,
   sleep: Moon,
-  general: Sparkles,
+  general: Heart,
 };
 type Gesture = {
   x: number;
