@@ -35,6 +35,8 @@ BASE_PATH=/zaadi npm run preview
 - After-prayer and bedtime collections are selected manually, never inferred from time.
 - Swipe right for next / left for previous. Visible labelled arrow buttons and keyboard
   Right (next) / Left (previous) are alternatives. Vertical scroll, selection and multitouch do not navigate.
+- Space records a reading from page/text focus and advances when repetitions finish.
+  Focused controls retain their normal Space action; holding Space does not count repeatedly.
 - Tab moves through controls. Left/Right work from the page; Home/End jump to the first/last
   item and Enter counts when the text is focused. Escape closes panels and restores focus.
   Settings include an Arabic keyboard guide; shortcuts respect text selection and editing.

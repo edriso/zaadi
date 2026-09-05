@@ -2,7 +2,7 @@
 
 - Source researcher inspected the Arabic source pages and repetition contexts before
   data import. The pipeline verifies the pinned records and unmodified Quran corpus.
-- Twenty-three focused tests pass: time-window boundaries, local city calculations, invalid
+- Twenty-four focused tests pass: time-window boundaries, local city calculations, invalid
   stored settings, zoom bounds, swipe direction, ignored gestures, bounded navigation,
   narration suffixes, Quran ranges, unrestricted-count protection, keyboard guards, and
   exact allowlisted source destinations, theme migration, atomic count/advance/undo,
@@ -45,6 +45,10 @@
   remain. Refresh preserves the setting. Option+S/L/Z, text activation and arrow
   navigation work in desktop Brave. Sources open from settings with focus on Close.
   Invalid/legacy preferences and shortcut editing/modifier guards have focused tests.
+
+- Space regression: a fresh-page Space press advances a single-reading card; the next
+  press records 1/3 without advancing early. Verified in desktop Brave minimal mode.
+  Tests also cover page/text focus, native controls, held keys and modifier guards.
 
 Not verified:
 

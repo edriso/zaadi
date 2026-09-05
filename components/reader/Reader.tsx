@@ -287,6 +287,7 @@ export function Reader() {
             ),
           ),
         reading: target === viewport.current || target === text.current,
+        page: target === document.body || target === document.documentElement,
       });
       if (!action) return;
       event.preventDefault();
@@ -359,8 +360,8 @@ export function Reader() {
         className="reading-area"
         ref={viewport}
         tabIndex={0}
-        aria-label="نص الذكر؛ السهم الأيمن للتالي، والأيسر للسابق، وEnter لتسجيل قراءة"
-        aria-keyshortcuts="ArrowLeft ArrowRight Home End Enter"
+        aria-label="نص الذكر؛ السهم الأيمن للتالي، والأيسر للسابق، والمسافة أو Enter لتسجيل قراءة"
+        aria-keyshortcuts="ArrowLeft ArrowRight Home End Enter Space"
         onPointerDown={startPointer}
         onPointerMove={movePointer}
         onPointerUp={endPointer}
@@ -796,6 +797,14 @@ export function Reader() {
                     <kbd>Home</kbd> / <kbd>End</kbd>
                   </dt>
                   <dd>أول ذكر / آخر ذكر، عند التركيز على النص</dd>
+                </div>
+                <div>
+                  <dt>
+                    <kbd>Space</kbd>
+                  </dt>
+                  <dd>
+                    تسجيل قراءة من الصفحة أو النص، ثم الانتقال عند اكتمال العدد
+                  </dd>
                 </div>
                 <div>
                   <dt>

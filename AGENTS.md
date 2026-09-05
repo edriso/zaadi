@@ -37,6 +37,8 @@ Correctness, readable Arabic, and a quiet reading experience come first.
   records one repetition and advances only when its target is met. Unrestricted texts
   advance without inventing a count. The last card never wraps. Undo reverses a read
   and its automatic advance. Keep the text button stable so keyboard focus survives.
+- Space reads from page or text focus, including after arrow navigation. Preserve native
+  Space activation on other controls; suppress held-Space scrolling/repeated counting.
 - Reject held keys, accidental rapid taps, long presses, selection and drags (including
   out-and-back drags) as read actions. Track tap movement separately from swipe intent.
 - Default mode provides visible navigation buttons. The user's optional minimal mode

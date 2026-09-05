@@ -361,3 +361,29 @@ test('panel and undo shortcuts use physical Alt keys and respect input guards', 
       assert.equal(keyboardAction({ code, altKey: true, [flag]: true }), null);
   }
 });
+
+test('Space reads from the page or text without overriding other controls or scrolling on hold', () => {
+  for (const scope of [{ page: true }, { reading: true }]) {
+    assert.equal(keyboardAction({ key: ' ' }, scope), 'count');
+    assert.equal(keyboardAction({ key: ' ', repeat: true }, scope), 'suppress');
+    assert.equal(
+      keyboardAction({ key: ' ' }, { ...scope, blocked: true }),
+      null,
+    );
+    for (const modifier of ['altKey', 'ctrlKey', 'metaKey', 'shiftKey'])
+      assert.equal(keyboardAction({ key: ' ', [modifier]: true }, scope), null);
+  }
+  assert.equal(keyboardAction({ key: ' ' }), null);
+  const items = [
+    { id: 'one', count: 1 },
+    { id: 'three', count: 3 },
+  ];
+  let state = newReading();
+  for (let i = 0; i < 2; i++) {
+    if (keyboardAction({ key: ' ' }, { page: true }) === 'count')
+      state = readingReducer(state, { type: 'read', items });
+  }
+  assert.equal(state.index, 1);
+  assert.equal(state.counts.one, 1);
+  assert.equal(state.counts.three, 1);
+});
