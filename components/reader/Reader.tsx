@@ -1,5 +1,13 @@
 'use client';
-import { useEffect, useRef, useState, type TouchEvent } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  useReducer,
+  useMemo,
+  useCallback,
+  type PointerEvent,
+} from 'react';
 import {
   ArrowLeft,
   ArrowRight,
@@ -18,9 +26,9 @@ import {
 } from 'lucide-react';
 import { collections, getItems, type Preferences } from '@/lib/content';
 import { useFitText } from '@/lib/useFitText';
+import { useAppearance } from '@/lib/useAppearance';
 import { useWebMcp } from '@/lib/useWebMcp';
 import {
-  boundedIndex,
   keyboardAction,
   cities,
   clampZoom,
@@ -32,7 +40,8 @@ import {
   swipeDirection,
 } from '@/lib/core.mjs';
 import { Panel } from './Panel';
-const STORAGE = 'zaadi:preferences:v1';
+import { newReading, readingReducer, isReadingTap } from '@/lib/reading.mjs';
+import { STORAGE } from '@/lib/appearance.mjs';
 const methodLabels: Record<string, string> = {
   Egyptian: 'الهيئة المصرية للمساحة',
   MuslimWorldLeague: 'رابطة العالم الإسلامي',
@@ -54,13 +63,15 @@ type Gesture = {
   time: number;
   multitouch?: boolean;
   canceled?: boolean;
+  moved?: boolean;
 };
 export function Reader() {
   const [collection, setCollection] = useState('general');
-  const [index, setIndex] = useState(0);
-  const [counts, setCounts] = useState<Record<string, number>>({});
+  const [reading, dispatch] = useReducer(readingReducer, undefined, newReading);
+  const { index, counts } = reading;
   const [preferences, setPreferences] = useState<Preferences>({
     zoom: 1,
+    theme: 'light',
     city: '',
     method: '',
     hanafi: false,
@@ -73,11 +84,13 @@ export function Reader() {
   const [ready, setReady] = useState(false);
   const [now, setNow] = useState<Date | null>(null);
   const viewport = useRef<HTMLElement>(null),
-    text = useRef<HTMLParagraphElement>(null);
+    text = useRef<HTMLButtonElement>(null);
+  const tapAllowed = useRef(false);
+  const lastReadAt = useRef(-Infinity);
   const gesture = useRef<Gesture | null>(null);
   const preferencesRef = useRef(preferences);
   const trigger = useRef<HTMLElement | null>(null);
-  const selectedItems = getItems(collection),
+  const selectedItems = useMemo(() => getItems(collection), [collection]),
     item = selectedItems[index],
     group = collections.find((value) => value.id === collection)!;
   const base = useFitText(viewport, text, item.id);
@@ -120,8 +133,7 @@ export function Reader() {
         ? target
         : suggestion(new Date(), preferencesRef.current).id;
       setCollection(chosen);
-      setIndex(0);
-      setCounts({});
+      dispatch({ type: 'reset' });
       setOpeningNote(
         target ? 'اختيار من القائمة أو الرابط' : 'اقتراح بحسب وقت فتح الصفحة',
       );
@@ -153,8 +165,15 @@ export function Reader() {
       );
     }
   }, [preferences, ready]);
+  useAppearance(ready, preferences.theme);
   useEffect(() => {
     viewport.current?.scrollTo({ top: 0, behavior: 'auto' });
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const animation = text.current?.animate?.(
+      [{ opacity: 0.4 }, { opacity: 1 }],
+      { duration: 160, easing: 'ease-out' },
+    );
+    return () => animation?.cancel();
   }, [item.id]);
   const closePanel = () => {
     setPanel(null);
@@ -170,8 +189,7 @@ export function Reader() {
   const choose = (id: string, automatic = false) => {
     if (!collections.some((value) => value.id === id)) return;
     setCollection(id);
-    setIndex(0);
-    setCounts({});
+    dispatch({ type: 'reset' });
     setOpeningNote(
       automatic
         ? suggestion(new Date(), preferences).label
@@ -191,53 +209,51 @@ export function Reader() {
     closePanel();
   };
   const navigate = (delta: number) =>
-    setIndex((value) => boundedIndex(value, delta, selectedItems.length));
+    dispatch({ type: 'navigate', index: index + delta, items: selectedItems });
+  const recordReading = useCallback(() => {
+    if (!ready || panel || window.getSelection()?.toString()) return;
+    const now = performance.now();
+    if (now - lastReadAt.current < 250) return;
+    lastReadAt.current = now;
+    dispatch({ type: 'read', items: selectedItems });
+  }, [ready, panel, selectedItems]);
   const changeZoom = (value: number) =>
     setPreferences((current) => ({ ...current, zoom: clampZoom(value) }));
   useWebMcp(
     { collection, item: item.id, index, zoom: preferences.zoom },
     { select: choose, zoom: changeZoom },
   );
-  const startSwipe = (event: TouchEvent<HTMLElement>) => {
-    if (event.touches.length !== 1) {
+  const startPointer = (event: PointerEvent<HTMLElement>) => {
+    tapAllowed.current = false;
+    if (!event.isPrimary) {
       if (gesture.current) gesture.current.multitouch = true;
       return;
     }
-    const touch = event.touches[0];
+    if (event.button !== 0) return;
     gesture.current = {
-      x: touch.clientX,
-      y: touch.clientY,
+      x: event.clientX,
+      y: event.clientY,
       time: event.timeStamp,
     };
   };
-  const moveSwipe = (event: TouchEvent<HTMLElement>) => {
-    if (!gesture.current) return;
-    if (event.touches.length !== 1) {
-      gesture.current.multitouch = true;
-      return;
-    }
-    const touch = event.touches[0];
-    if (
-      Math.abs(touch.clientY - gesture.current.y) > 18 &&
-      Math.abs(touch.clientY - gesture.current.y) >
-        Math.abs(touch.clientX - gesture.current.x)
-    )
+  const movePointer = (event: PointerEvent<HTMLElement>) => {
+    if (!gesture.current || !event.isPrimary) return;
+    const dx = event.clientX - gesture.current.x,
+      dy = event.clientY - gesture.current.y;
+    if (Math.hypot(dx, dy) >= 10) gesture.current.moved = true;
+    if (Math.abs(dy) > 18 && Math.abs(dy) > Math.abs(dx))
       gesture.current.canceled = true;
   };
-  const endSwipe = (event: TouchEvent<HTMLElement>) => {
-    if (window.getSelection()?.toString()) {
-      gesture.current = null;
-      return;
-    }
-    const touch = event.changedTouches[0];
-    if (touch) {
-      const direction = swipeDirection(gesture.current, {
-        x: touch.clientX,
-        y: touch.clientY,
-        time: event.timeStamp,
-      });
-      if (direction) navigate(direction);
-    }
+  const endPointer = (event: PointerEvent<HTMLElement>) => {
+    if (!event.isPrimary) return;
+    const end = { x: event.clientX, y: event.clientY, time: event.timeStamp };
+    const selected = Boolean(window.getSelection()?.toString());
+    tapAllowed.current = !selected && isReadingTap(gesture.current, end);
+    const direction =
+      selected || event.pointerType === 'mouse'
+        ? 0
+        : swipeDirection(gesture.current, end);
+    if (direction) navigate(direction);
     gesture.current = null;
   };
   useEffect(() => {
@@ -254,27 +270,31 @@ export function Reader() {
               'input,select,textarea,[contenteditable]:not([contenteditable="false"]),dialog,[role="slider"]',
             ),
           ),
-        reading: target === viewport.current,
+        reading: target === viewport.current || target === text.current,
       });
       if (!action) return;
       event.preventDefault();
       if (action === 'next' || action === 'previous') {
-        setIndex((value) =>
-          boundedIndex(value, action === 'next' ? 1 : -1, selectedItems.length),
-        );
+        dispatch({
+          type: 'navigate',
+          index: index + (action === 'next' ? 1 : -1),
+          items: selectedItems,
+        });
         viewport.current?.focus({ preventScroll: true });
       }
-      if (action === 'first') setIndex(0);
-      if (action === 'last') setIndex(selectedItems.length - 1);
-      if (action === 'count' && item.count !== null)
-        setCounts((current) => ({
-          ...current,
-          [item.id]: Math.min(item.count!, (current[item.id] ?? 0) + 1),
-        }));
+      if (action === 'first')
+        dispatch({ type: 'navigate', index: 0, items: selectedItems });
+      if (action === 'last')
+        dispatch({
+          type: 'navigate',
+          index: selectedItems.length - 1,
+          items: selectedItems,
+        });
+      if (action === 'count') recordReading();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [ready, panel, selectedItems.length, item.id, item.count]);
+  }, [ready, panel, selectedItems, index, recordReading]);
   return (
     <main className="reader">
       <button
@@ -317,16 +337,27 @@ export function Reader() {
         className="reading-area"
         ref={viewport}
         tabIndex={0}
-        aria-label="نص الذكر؛ السهم الأيسر للتالي، والأيمن للسابق، وEnter لتسجيل قراءة"
+        aria-label="نص الذكر؛ السهم الأيمن للتالي، والأيسر للسابق، وEnter لتسجيل قراءة"
         aria-keyshortcuts="ArrowLeft ArrowRight Home End Enter"
-        onTouchStart={startSwipe}
-        onTouchMove={moveSwipe}
-        onTouchEnd={endSwipe}
-        onTouchCancel={() => {
+        onPointerDown={startPointer}
+        onPointerMove={movePointer}
+        onPointerUp={endPointer}
+        onPointerCancel={() => {
+          tapAllowed.current = false;
           gesture.current = null;
         }}
       >
-        <p
+        <button
+          type="button"
+          aria-describedby="tap-hint"
+          onKeyDown={(event) => {
+            if (event.repeat && (event.key === 'Enter' || event.key === ' '))
+              event.preventDefault();
+          }}
+          onClick={(event) => {
+            if (event.detail === 0 || tapAllowed.current) recordReading();
+            tapAllowed.current = false;
+          }}
           className={`dhikr-text ${item.quran.length ? 'quran' : ''}`}
           ref={text}
           style={{ fontSize: Math.max(16, base * preferences.zoom) }}
@@ -342,7 +373,7 @@ export function Reader() {
                 </span>
               ))
             : item.text}
-        </p>
+        </button>
       </section>
       {/* oxlint-enable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex */}
       <div className="reading-note">
@@ -351,70 +382,71 @@ export function Reader() {
           المصدر
         </button>
       </div>
+      <p id="tap-hint" className="hint-line">
+        {item.count === null
+          ? 'اقرأ على مهل؛ الضغط على النص ينقلك للتالي'
+          : 'اضغط على الذكر لتسجيل قراءة؛ ننتقل للتالي عند اكتمال العدد'}
+      </p>
       <div className="counter-area">
-        {item.count === null ? (
-          <p className="small-note">ذكر مطلق؛ لا عدد محدد في الرواية</p>
-        ) : (
-          <>
-            <div className="counter-row">
-              <button
-                className="undo-button"
-                aria-label="التراجع عن آخر ضغطة"
-                disabled={count === 0}
-                onClick={() =>
-                  setCounts((current) => ({
-                    ...current,
-                    [item.id]: Math.max(0, (current[item.id] ?? 0) - 1),
-                  }))
-                }
-              >
-                <RotateCcw size={17} />
-              </button>
-              <button
-                className={`count-button ${complete ? 'is-counted' : ''}`}
-                disabled={complete}
-                onClick={() =>
-                  setCounts((current) => ({
-                    ...current,
-                    [item.id]: Math.min(
-                      item.count!,
-                      (current[item.id] ?? 0) + 1,
-                    ),
-                  }))
-                }
-              >
-                {complete ? (
-                  <>
-                    <Check size={19} />
-                    {item.count === 1 ? 'تمت القراءة' : 'اكتمل العدد'}
-                  </>
-                ) : (
-                  <>
-                    قرأت
-                    {item.count > 1 && (
-                      <span>
-                        {referenceNumber(count)} / {referenceNumber(item.count)}
-                      </span>
-                    )}
-                  </>
+        <div className="counter-row">
+          <button
+            className="undo-button"
+            aria-label="التراجع عن آخر قراءة والعودة إليها"
+            disabled={reading.history.length === 0}
+            onClick={() => dispatch({ type: 'undo' })}
+          >
+            <RotateCcw size={17} />
+          </button>
+          <button
+            className={`count-button ${complete ? 'is-counted' : ''}`}
+            disabled={
+              (complete || item.count === null) &&
+              index === selectedItems.length - 1
+            }
+            onClick={recordReading}
+            onKeyDown={(event) => {
+              if (event.repeat && (event.key === 'Enter' || event.key === ' '))
+                event.preventDefault();
+            }}
+          >
+            {complete && index === selectedItems.length - 1 ? (
+              <>
+                <Check size={19} />
+                {item.count === 1 ? 'تمت القراءة' : 'اكتمل العدد'}
+              </>
+            ) : item.count === null || complete ? (
+              'التالي'
+            ) : (
+              <>
+                قرأت{' '}
+                {item.count > 1 && (
+                  <span>
+                    {referenceNumber(count)} / {referenceNumber(item.count)}
+                  </span>
                 )}
-              </button>
-              <span className="counter-balance" aria-hidden="true" />
-            </div>
-            <p className="counter-label">
-              {item.countKind === 'single-recitation'
-                ? 'قراءة واحدة؛ دون تكرار معدود في الرواية'
-                : item.id === 'daily-tasbih'
-                  ? 'مئة مرة في اليوم'
-                  : `${referenceNumber(item.count)} ${item.count === 3 ? 'مرات' : 'مرة'}`}
-            </p>
-          </>
-        )}
+              </>
+            )}
+          </button>
+          <span className="counter-balance" aria-hidden="true" />
+        </div>
+        <p className="counter-label">
+          {item.count === null
+            ? 'ذكر مطلق؛ لا عدد محدد في الرواية'
+            : item.countKind === 'single-recitation'
+              ? 'قراءة واحدة؛ دون تكرار معدود في الرواية'
+              : item.id === 'daily-tasbih'
+                ? 'مئة مرة في اليوم'
+                : `${referenceNumber(item.count)} ${item.count === 3 ? 'مرات' : 'مرة'}`}
+        </p>
       </div>
       <footer className="reader-footer">
-        <button disabled={index === 0} onClick={() => navigate(-1)}>
+        <button
+          disabled={index === selectedItems.length - 1}
+          onClick={() => navigate(1)}
+          aria-keyshortcuts="ArrowRight"
+        >
           <ArrowRight size={19} aria-hidden="true" />
-          السابق
+          التالي
         </button>
         <span>
           {index === selectedItems.length - 1
@@ -422,10 +454,11 @@ export function Reader() {
             : 'اسحب لليمين للتالي'}
         </span>
         <button
-          disabled={index === selectedItems.length - 1}
-          onClick={() => navigate(1)}
+          disabled={index === 0}
+          onClick={() => navigate(-1)}
+          aria-keyshortcuts="ArrowLeft"
         >
-          التالي
+          السابق
           <ArrowLeft size={19} aria-hidden="true" />
         </button>
       </footer>
@@ -509,6 +542,24 @@ export function Reader() {
         )}
         {panel === 'settings' && (
           <>
+            <section className="setting-section">
+              <h3>المظهر</h3>
+              <label htmlFor="theme">لون الواجهة</label>
+              <select
+                id="theme"
+                value={preferences.theme}
+                onChange={(event) =>
+                  setPreferences((current) => ({
+                    ...current,
+                    theme: event.target.value as Preferences['theme'],
+                  }))
+                }
+              >
+                <option value="light">فاتح</option>
+                <option value="dark">داكن</option>
+                <option value="system">بحسب إعداد الجهاز</option>
+              </select>
+            </section>
             <section className="setting-section">
               <h3>حجم النص</h3>
               <p className="small-note">
@@ -632,7 +683,7 @@ export function Reader() {
               <dl className="keyboard-help">
                 <div>
                   <dt>
-                    <kbd>←</kbd> / <kbd>→</kbd>
+                    <kbd>→</kbd> / <kbd>←</kbd>
                   </dt>
                   <dd>الذكر التالي / السابق</dd>
                 </div>

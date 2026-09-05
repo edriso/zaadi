@@ -1,3 +1,6 @@
+import { runInNewContext } from 'node:vm';
+import { bootstrapAppearance, STORAGE } from '../lib/appearance.mjs';
+import { newReading, readingReducer, isReadingTap } from '../lib/reading.mjs';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
@@ -65,7 +68,13 @@ test('malformed stored values cannot break reading or bypass size bounds', () =>
       hanafi: 'yes',
     }),
   );
-  assert.deepEqual(value, { zoom: 1.6, city: '', method: '', hanafi: false });
+  assert.deepEqual(value, {
+    zoom: 1.6,
+    city: '',
+    method: '',
+    hanafi: false,
+    theme: 'light',
+  });
   assert.equal(clampZoom(-1), 0.8);
   assert.equal(clampZoom(Infinity), 1);
   assert.equal(clampZoom(1.299999), 1.3);
@@ -120,8 +129,8 @@ test('unrestricted remembrance cannot acquire a prescribed target', () => {
 });
 
 test('keyboard navigation works from page controls without stealing activation or scroll', () => {
-  assert.equal(keyboardAction({ key: 'ArrowLeft' }), 'next');
-  assert.equal(keyboardAction({ key: 'ArrowRight' }), 'previous');
+  assert.equal(keyboardAction({ key: 'ArrowRight' }), 'next');
+  assert.equal(keyboardAction({ key: 'ArrowLeft' }), 'previous');
   for (const key of [
     'Enter',
     ' ',
@@ -177,4 +186,141 @@ test('exceptional source links retain exact narration identity and trusted desti
       url: 'https://sunnah.com/bukhari:6307',
     }),
   );
+});
+
+test('old and invalid preferences keep light mode; chosen dark/system themes survive', () => {
+  for (const theme of ['light', 'dark', 'system'])
+    assert.equal(
+      parsePreferences(JSON.stringify({ version: 1, theme })).theme,
+      theme,
+    );
+  assert.equal(
+    parsePreferences(JSON.stringify({ version: 1, theme: 'invalid' })).theme,
+    'light',
+  );
+  assert.equal(parsePreferences(JSON.stringify({ version: 1 })).theme, 'light');
+});
+
+test('reading waits for all repetitions, advances once, and undo reverses the move', () => {
+  const items = [
+    { id: 'three', count: 3 },
+    { id: 'one', count: 1 },
+  ];
+  let state = newReading();
+  for (let count = 1; count <= 3; count++) {
+    state = readingReducer(state, { type: 'read', items });
+    assert.equal(state.counts.three, count);
+    assert.equal(state.index, count === 3 ? 1 : 0);
+  }
+  state = readingReducer(state, { type: 'undo' });
+  assert.equal(state.index, 0);
+  assert.equal(state.counts.three, 2);
+  state = readingReducer(state, { type: 'read', items });
+  state = readingReducer(state, { type: 'read', items });
+  assert.equal(state.index, 1);
+  assert.equal(state.counts.one, 1);
+  assert.deepEqual(readingReducer(state, { type: 'read', items }), state);
+});
+test('navigation and unrestricted text do not invent repetitions; undo works across cards', () => {
+  const items = [
+    { id: 'one', count: 1 },
+    { id: 'free', count: null },
+  ];
+  const skipped = readingReducer(newReading(), {
+    type: 'navigate',
+    index: 1,
+    items,
+  });
+  assert.deepEqual(skipped.counts, {});
+  assert.deepEqual(readingReducer(skipped, { type: 'read', items }).counts, {});
+  const counted = readingReducer(newReading(), { type: 'read', items });
+  assert.equal(counted.index, 1);
+  const undone = readingReducer(counted, { type: 'undo' });
+  assert.equal(undone.index, 0);
+  assert.equal(undone.counts.one, 0);
+  assert.deepEqual(readingReducer(counted, { type: 'reset' }), newReading());
+});
+test('text taps exclude drags, long presses, scrolls, cancellation and multitouch', () => {
+  const start = { x: 10, y: 10, time: 0 },
+    end = { x: 11, y: 12, time: 200 };
+  assert.equal(isReadingTap(start, end), true);
+  for (const flag of ['moved', 'canceled', 'multitouch'])
+    assert.equal(isReadingTap({ ...start, [flag]: true }, end), false);
+  assert.equal(isReadingTap(start, { ...end, x: 70 }), false);
+  assert.equal(isReadingTap(start, { ...end, time: 600 }), false);
+  assert.equal(isReadingTap(null, end), false);
+});
+
+function appearanceHarness({ stored, denied = false } = {}) {
+  const dataset = {},
+    events = new Map();
+  let timeout, resolveFonts;
+  const loaded = new Promise((resolve) => {
+    resolveFonts = resolve;
+  });
+  const context = {
+    document: {
+      documentElement: { dataset },
+      fonts: { load: () => loaded, ready: Promise.resolve() },
+    },
+    localStorage: {
+      getItem: () => {
+        if (denied) throw new Error('Storage denied');
+        return stored;
+      },
+    },
+    matchMedia: () => ({ matches: true }),
+    window: {
+      addEventListener: (type, handler) => events.set(type, handler),
+      removeEventListener: (type) => events.delete(type),
+    },
+    setTimeout: (handler) => {
+      timeout = handler;
+      return 1;
+    },
+    clearTimeout: () => {},
+    requestAnimationFrame: (handler) => handler(),
+  };
+  runInNewContext(
+    `(${bootstrapAppearance.toString()})(${JSON.stringify(STORAGE)}, [{family:'Test',sample:'ذكر'}])`,
+    context,
+  );
+  return {
+    dataset,
+    ready: () => events.get('zaadi:ready')?.(),
+    timeout: () => timeout(),
+    loaded: () => resolveFonts([{}]),
+  };
+}
+const flushPromises = () => new Promise((resolve) => setImmediate(resolve));
+test('first paint restores theme and waits for both fonts and reader readiness', async () => {
+  const page = appearanceHarness({
+    stored: JSON.stringify({ version: 1, theme: 'dark' }),
+  });
+  assert.equal(page.dataset.theme, 'dark');
+  page.ready();
+  assert.equal(page.dataset.boot, 'loading');
+  page.loaded();
+  await flushPromises();
+  assert.equal(page.dataset.boot, 'ready');
+  assert.equal(page.dataset.fonts, undefined);
+});
+test('font failure reveals a stable fallback; late fonts cannot replace it', async () => {
+  const page = appearanceHarness({ denied: true });
+  assert.equal(page.dataset.theme, 'light');
+  page.ready();
+  page.timeout();
+  assert.equal(page.dataset.boot, 'ready');
+  assert.equal(page.dataset.fonts, 'fallback');
+  page.loaded();
+  await flushPromises();
+  assert.equal(page.dataset.fonts, 'fallback');
+});
+test('missing reader script cannot leave the page hidden indefinitely', async () => {
+  const page = appearanceHarness({ stored: '{' });
+  page.loaded();
+  await flushPromises();
+  assert.equal(page.dataset.boot, 'loading');
+  page.timeout();
+  assert.equal(page.dataset.boot, 'ready');
 });

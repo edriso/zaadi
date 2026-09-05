@@ -1,12 +1,68 @@
 :root {
   font-family: 'Cairo Variable', sans-serif;
-  color: #242823;
-  background: #fff;
+  color-scheme: light;
+  color: var(--text);
+  background: var(--surface);
+  --text: #242823;
+  --surface: #fff;
+  --hover: #edf1e9;
+  --selection: #dce6d8;
+  --success: #385938;
+  --success-bg: #eef3ec;
+  --notice: #f8f2e7;
+  --focus: #809880;
   font-synthesis: none;
   --muted: #6b7069;
   --line: #e9ebe7;
   --soft: #f6f7f4;
   --accent: #364b37;
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --text: #e7ece5;
+  --surface: #151a17;
+  --muted: #abb5a9;
+  --line: #354038;
+  --soft: #222a24;
+  --accent: #b5cdb0;
+  --hover: #2e3930;
+  --selection: #43583f;
+  --success: #c2dcbb;
+  --success-bg: #273627;
+  --notice: #3a3020;
+  --focus: #a4c69a;
+}
+html[data-boot='loading'] .reader {
+  visibility: hidden;
+}
+.boot-indicator {
+  display: none;
+}
+html[data-boot='loading'] .boot-indicator {
+  display: grid;
+  place-items: center;
+  position: fixed;
+  inset: 0;
+  background: var(--surface);
+}
+.boot-indicator span {
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--line);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: loading 1s linear infinite;
+}
+@keyframes loading {
+  to {
+    transform: rotate(360deg);
+  }
+}
+html[data-fonts='fallback'] {
+  font-family: sans-serif;
+}
+html[data-fonts='fallback'] .dhikr-text.quran {
+  font-family: serif;
 }
 * {
   box-sizing: border-box;
@@ -38,7 +94,7 @@ button:focus-visible,
 a:focus-visible,
 input:focus-visible,
 select:focus-visible {
-  outline: 3px solid #809880;
+  outline: 3px solid var(--focus);
   outline-offset: 4px;
 }
 button {
@@ -55,7 +111,7 @@ svg {
   flex-shrink: 0;
 }
 ::selection {
-  background: #dce6d8;
+  background: var(--selection);
 }
 .reader {
   height: 100vh;
@@ -138,6 +194,10 @@ svg {
   margin-inline: auto;
 }
 .dhikr-text {
+  padding: 0;
+  user-select: text;
+  -webkit-user-select: text;
+  border-radius: 8px;
   flex-shrink: 0;
   text-align: center;
   line-height: 2.1;
@@ -186,7 +246,7 @@ svg {
   min-height: 52px;
   min-width: 180px;
   padding: 10px 26px;
-  border: 1px solid #d9dfd4;
+  border: 1px solid var(--line);
   border-radius: 30px;
   background: var(--soft);
   font-size: 0.95rem;
@@ -196,7 +256,7 @@ svg {
   gap: 18px;
 }
 .count-button:hover {
-  background: #edf1e9;
+  background: var(--hover);
 }
 .counter-label {
   font-size: 0.75rem;
@@ -301,6 +361,7 @@ svg {
   * {
     scroll-behavior: auto !important;
     transition: none !important;
+    animation: none !important;
   }
 }
 .counter-balance {
@@ -308,9 +369,9 @@ svg {
 }
 .count-button.is-counted {
   opacity: 1;
-  color: #385938;
-  background: #eef3ec;
-  border-color: #dce5d7;
+  color: var(--success);
+  background: var(--success-bg);
+  border-color: var(--line);
 }
 .panel {
   padding: 0;
@@ -319,7 +380,7 @@ svg {
   width: min(480px, calc(100% - 24px));
   max-height: calc(100dvh - 48px);
   color: inherit;
-  background: white;
+  background: var(--surface);
   box-shadow: 0 20px 80px #1c251b18;
 }
 .panel::backdrop {
@@ -333,7 +394,7 @@ svg {
   padding: 22px 24px 16px;
   position: sticky;
   top: 0;
-  background: white;
+  background: var(--surface);
   border-bottom: 1px solid var(--line);
   z-index: 1;
 }
@@ -456,8 +517,8 @@ svg {
 }
 .setting-section select {
   width: 100%;
-  background: white;
-  border: 1px solid #d4d9d0;
+  background: var(--surface);
+  border: 1px solid var(--line);
   border-radius: 8px;
   min-height: 48px;
   padding: 9px;
@@ -485,7 +546,7 @@ svg {
 }
 .storage-message {
   font-size: 0.8rem;
-  background: #f8f2e7;
+  background: var(--notice);
   padding: 12px;
   margin-top: 12px;
 }
@@ -530,7 +591,7 @@ svg {
   bottom: 0;
   inset-inline: 0;
   padding: 15px;
-  background: white;
+  background: var(--surface);
   border-top: 1px solid var(--line);
   font-size: 0.8rem;
 }
@@ -559,7 +620,7 @@ svg {
   max-width: 90%;
   align-self: center;
   text-decoration: underline;
-  text-decoration-color: #d4d9d0;
+  text-decoration-color: var(--line);
   text-underline-offset: 4px;
   padding: 5px 10px;
 }
@@ -603,8 +664,8 @@ svg {
   top: -100px;
   inset-inline-start: 16px;
   z-index: 10;
-  background: white;
-  border: 1px solid #315f4c;
+  background: var(--surface);
+  border: 1px solid var(--accent);
   border-radius: 10px;
   padding: 12px 18px;
 }
@@ -629,8 +690,17 @@ svg {
 }
 kbd {
   font: inherit;
-  background: #f5f7f5;
-  border: 1px solid #dce3dd;
+  background: var(--soft);
+  border: 1px solid var(--line);
   border-radius: 4px;
   padding: 2px 6px;
+}
+
+.dhikr-text:focus-visible {
+  outline-offset: -3px;
+}
+.hint-line {
+  flex-shrink: 0;
+  margin-block: 2px 6px;
+  color: var(--muted);
 }

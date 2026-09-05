@@ -15,6 +15,16 @@ assert.ok(
   !html.includes('user-scalable=no') && !html.includes('maximum-scale=1'),
   'Do not disable browser zoom',
 );
+assert.ok(html.includes('/zaadi-icon.svg'), 'Missing Zaadi tab icon');
+assert.equal(
+  [...html.matchAll(/as="font"/g)].length,
+  3,
+  'Preload each local font subset',
+);
+assert.ok(
+  html.includes('zaadi:ready') && html.includes('font-display:block'),
+  'Missing first-paint font gate',
+);
 const files = [];
 const walk = (path) => {
   for (const name of readdirSync(path, { withFileTypes: true })) {

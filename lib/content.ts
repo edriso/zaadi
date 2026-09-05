@@ -4,6 +4,7 @@ export const items = data.items;
 export type Dhikr = (typeof data.items)[number];
 export type Preferences = {
   zoom: number;
+  theme: 'light' | 'dark' | 'system';
   city: string;
   method: string;
   hanafi: boolean;
