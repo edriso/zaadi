@@ -1,7 +1,8 @@
 # زادي
 
 A quiet, mobile-first Arabic remembrance reader. One dhikr per screen, white surfaces,
-generous space, light/dark themes, local fonts, bounded text size, and sources for every text and count.
+generous space, light/dark themes, local fonts, bounded text size, and a source, grade
+and count context for every text.
 
 ## Run
 
@@ -33,6 +34,10 @@ BASE_PATH=/zaadi npm run preview
   and evening from Asr to Isha. Other times choose general remembrance. These are
   navigation windows, not religious deadlines. Method and Asr convention are editable.
 - After-prayer and bedtime collections are selected manually, never inferred from time.
+- The screen carries one text and four small pieces of chrome: the wordmark, one button
+  naming the open collection and your place in it, settings, and the read and navigation
+  controls under the text. Everything else — timing explanation, sources, shortcuts —
+  lives inside the panels.
 - Swipe right for next / left for previous. Visible labelled arrow buttons and keyboard
   Right (next) / Left (previous) are alternatives. Vertical scroll, selection and multitouch do not navigate.
 - Space records a reading from page/text focus and advances when repetitions finish.
@@ -44,24 +49,34 @@ BASE_PATH=/zaadi npm run preview
   16px minimum. Large or long text scrolls. Short landscape windows allow page scrolling.
   Native browser zoom remains enabled.
 - The text and read button record one repetition, then advance when the narrated count
-  is complete. Undo restores the previous count and card; the last card never wraps.
-  A single-read label differs from prescribed repetition. Unrestricted dhikr has no target.
-- Optional “واجهة مختصرة” hides headings, supporting text, and navigation/read buttons,
-  retaining the text, repetition count and settings button. Swipe and keyboard navigation
-  remain available. Sources, collection selection and undo are available in settings.
+  is complete. A quiet fill inside the read button shows progress through that count.
+  Undo restores the previous count and card; the last card never wraps. A single-read
+  label differs from prescribed repetition. Unrestricted dhikr has no target.
+- Optional “واجهة مختصرة” hides the collection button, supporting text and navigation
+  buttons, retaining the text, repetition count and settings button. Swipe and keyboard
+  navigation remain available. Sources, collection selection and undo are in settings.
 - Alt+S opens settings, Escape opens collections, and Alt+Z undoes the last reading
   (Option on Mac). Escape closes an open panel. Other shortcuts do not override dialogs,
   typing or text selection. The keyboard guide appears at desktop widths (760px and up);
   shortcuts still work with an external keyboard on smaller screens.
-- Settings offer light, dark, or system appearance. Theme is applied before first paint.
-  Fonts preload before the reader appears; failed loading has a bounded, stable fallback.
+- Settings offer light, dark, or system appearance as one segmented control, and a plain
+  or patterned page background as another. The pattern is one seamless eight-point star
+  tile drawn inline in CSS — no image request, theme-aware, and veiled behind the middle
+  of the screen so the remembrance keeps a clean field. Plain stays the default.
+- Theme and background are both applied before first paint. Fonts preload before the
+  reader appears; failed loading has a bounded, stable fallback.
 - Preferences stay in localStorage. Counts stay in memory only and reset when choosing
   a collection/reloading; they are not a daily total or proof of recitation.
 
 ## Content and structure
 
-29 reading cards (16 morning, 15 evening; some cards belong to multiple collections) across five collections. This is a verified selection, not an exhaustive
-book of adhkar. Text, attribution, authenticity and count context are stored separately.
+54 reading cards across five collections: 17 morning, 15 evening, 12 after prayer,
+17 before sleep, and 6 unrestricted daily remembrances. Some cards belong to more than
+one collection, and each remembrance stores its own position in every collection that
+contains it, so a text can sit ninth in the morning sequence and twelfth before sleep.
+The order follows the Hisn al-Muslim chapters. This is a verified selection, not an
+exhaustive book of adhkar. Text, attribution, authenticity and count context are stored
+separately from the collection layout.
 
 ```text
 app/                  static page, layout, white responsive CSS
@@ -86,13 +101,21 @@ Adhan.js, local Cairo/Amiri fonts, and the scaffold's Lucide icons.
 
 Read [AGENTS.md](AGENTS.md) and [the content policy](docs/content-policy.md) before
 editing texts, repetitions or timing. Qur'an is resolved from the unchanged Tanzil corpus.
-Hadith texts and counts were checked against specific Sunnah.com, Dorar, and the Hisn al-Muslim author’s pages; the UI links
-back to each narration and labels its grade. Do not alter variant wording while retaining
-the old citation. Pinned sources are excluded from formatting.
+Hadith texts and counts were checked against specific Sunnah.com, Dorar, and Hisn
+al-Muslim author pages; the UI links back to each narration and labels its grade. Added
+wording is copied out of the inspected narration rather than retyped. Do not alter
+variant wording while retaining the old citation. Pinned sources are excluded from formatting.
 
-`npm run check` verifies source digests, references, counts, timing boundaries, preferences,
-gestures, TypeScript and lint. It cannot certify scholarly interpretation or substitute
-for real-device visual testing. See [verification notes](docs/verification.md).
+Well-known entries were left out where the inspected page does not support them —
+including `أشهدك` (Abu Dawud 5069, da'if), `ما أصبح بي من نعمة` (5073, da'if),
+`حسبي الله` seven times (5081, graded fabricated by al-Albani) and `رضيت بالله ربًّا`
+(5072 / Tirmidhi 3389, disputed). Each exclusion and its reason is recorded in
+`data/sources.json`.
+
+`npm run check` verifies source digests, references, counts, collection positions, timing
+boundaries, preferences, gestures, TypeScript and lint. It cannot certify scholarly
+interpretation or substitute for real-device visual testing.
+See [verification notes](docs/verification.md).
 
 ## GitHub Pages
 

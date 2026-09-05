@@ -11,6 +11,10 @@ Correctness, readable Arabic, and a quiet reading experience come first.
   Tanzil corpus, preserving every character and its attribution/license.
 - Verify exact hadith text, narrator, collection/number, authenticity, context, and count
   against an inspected trusted source. Never manufacture morning/evening variants.
+  Copy the wording out of the inspected narration; do not retype it from memory.
+- Appearing in a popular compilation is not evidence. Read the grade printed on the
+  narration's own page before adding a text, and record every rejection with its reason.
+  Several famous morning/evening entries are absent for exactly this reason.
 - A count belongs to a specific narration and occasion. Never turn an unrestricted
   remembrance into a prescribed count. Do not infer the user's prayer is complete.
 - Clearly separate the original text, editorial instructions, source labels, and timing
@@ -24,8 +28,18 @@ Correctness, readable Arabic, and a quiet reading experience come first.
 
 - app/: static route/layout; components/reader/: reader, panels; content/: collection
   definitions; data/: source texts/corpus; lib/: pure logic; scripts/: checks; docs/: guides.
+- A remembrance stores its position in every collection it belongs to, and each collection
+  reads in Hisn al-Muslim order. Duplicate positions fail the build. Order is presentation;
+  never present it as a required sequence.
 - Keep mobile first, spacious, Arabic RTL. Light mode starts white; offer dark and
   system themes using shared color tokens. One remembrance at a time.
+- The page pattern is opt-in and plain is the default. Keep it a seamless inline tile with
+  no network request, defined per theme, and veiled behind the reading area. It must never
+  compete with the text; if it makes a remembrance harder to read, it is wrong.
+- Guard the default screen against creeping chrome. It carries a header (wordmark, the
+  collection button that opens the list and shows the position, settings), the text, one
+  title/source line, the read controls with one hint line, and Next/Previous. Explanations
+  belong in the panels. Adding a band needs a reason stronger than convenience.
 - Use 100dvh with safe-area padding. Fit text only within safe readable bounds.
   User text zoom is limited and may require vertical scrolling. Never crop Arabic marks.
 - Quran: Amiri Quran, regular weight, line-height >=2.5. No Arabic letter spacing.

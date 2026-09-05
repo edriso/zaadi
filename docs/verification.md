@@ -1,8 +1,10 @@
-# Verification — 2026-09-05
+# Verification
+
+## 2026-09-05 — reader, content and appearance
 
 - Source researcher inspected the Arabic source pages and repetition contexts before
   data import. The pipeline verifies the pinned records and unmodified Quran corpus.
-- Twenty-five focused tests pass: time-window boundaries, local city calculations, invalid
+- Focused tests pass: time-window boundaries, local city calculations, invalid
   stored settings, zoom bounds, swipe direction, ignored gestures, bounded navigation,
   narration suffixes, Quran ranges, unrestricted-count protection, keyboard guards, and
   exact allowlisted source destinations, theme migration, atomic count/advance/undo,
@@ -50,7 +52,7 @@
   press records 1/3 without advancing early. Verified in desktop Brave minimal mode.
   Tests also cover page/text focus, native controls, held keys and modifier guards.
 
-Not verified:
+Not verified in that round:
 
 - Mobile-device gestures, screen-reader behavior, and 200% zoom.
   Desktop UI was available for keyboard checks; these checks are not a substitute for
@@ -58,3 +60,46 @@ Not verified:
 - Optional WebMCP tools are feature-detected and do not affect ordinary readers. No
   supporting browser registry was available, so registration/state transitions are unverified.
 - Source checking is not qualified scholarly review; the site does not claim that status.
+
+## 2026-09-05 — content expansion and interface simplification
+
+- Collections grew from 29 to 54 reading cards: morning 17, evening 15, after prayer 12,
+  before sleep 17, general 6. Bedtime went from 2 cards to 17.
+- Every added narration was read on its own Sunnah.com page through a text proxy (the
+  site refuses automated requests) and cross-read against the Arabic mirror of the same
+  Sunnah.com corpus, matched by in-book reference. Displayed wording is sliced out of that
+  narration text programmatically rather than retyped.
+- Four widely reprinted morning/evening entries were rejected on their own grade lines:
+  Abu Dawud 5069 (ضعيف), 5073 (ضعيف), 5084 (ضعيف) and 5081 (موضوع at al-Albani), plus
+  رضيت بالله ربًّا (Abu Dawud 5072 / Tirmidhi 3389, ضعيف at al-Albani). Reasons are
+  recorded in data/sources.json.
+- Muslim citations were confirmed against the number Sunnah.com itself prints, including
+  its lettered forms (593a, 594a, 406a, 2702a, 2713a, 2714a, 2710a); each cited URL was
+  opened and returned that reference.
+- Collection ordering is now data: each remembrance stores its position per collection,
+  duplicate positions fail the build, and the generator reports per-collection sizes.
+- Default interface reduced from eight stacked bands to five. The wordmark, collection
+  heading, item counter and timing note collapsed into one header row whose middle control
+  opens the collection list; the tap hint and repetition label merged into one line; the
+  footer keeps only Next/Previous. Minimal mode is unchanged in what it hides.
+- Appearance is now a three-way segmented radio control instead of a select. Theme values,
+  storage format and the pre-paint bootstrap are unchanged.
+- The read button shows a quiet progress fill for multi-repetition texts.
+- Added an opt-in page pattern: a seamless eight-point star tile inlined as a per-theme
+  data URI, painted by a fixed pseudo-element under a radial veil. Plain remains the
+  default; the choice is stored, validated as an exact value, and restored before first
+  paint alongside the theme. The tile was rendered offline at several opacities in both
+  themes to confirm it repeats without seams and leaves the reading field clear; 0.15
+  (light) and 0.16 (dark) at a 144px tile were chosen from those renders.
+- npm run check (28 tests, digests, positions, strict TypeScript, lint) and the production
+  static export with the repository base path both pass.
+
+Not verified in this round:
+
+- No browser was available in this session, so the redesigned layout was not seen
+  rendered: no desktop, mobile-emulation, screen-reader, or 200% zoom pass was made on
+  the new header, hint line, segmented theme/background controls, progress fill, or the
+  pattern in the running app. Only the pattern tile itself was rendered, on its own. The layout math
+  (band heights against 100dvh) was checked by reading the stylesheet only. Re-run the
+  earlier device and keyboard checks before publishing.
+- Source reading is transcription against the cited pages, not qualified scholarly review.

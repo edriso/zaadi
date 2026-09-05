@@ -9,6 +9,7 @@ import {
   suggestion,
   parsePreferences,
   clampZoom,
+  defaultPreferences,
   swipeDirection,
   boundedIndex,
   keyboardAction,
@@ -18,6 +19,7 @@ import {
   resolveRefs,
   validateCount,
   validateSource,
+  validatePlacement,
   buildContent,
 } from './content.mjs';
 test('source corpus and every occasion/count validate', () => buildContent());
@@ -74,6 +76,7 @@ test('malformed stored values cannot break reading or bypass size bounds', () =>
     method: '',
     hanafi: false,
     theme: 'light',
+    background: 'plain',
     minimal: false,
   });
   assert.equal(clampZoom(-1), 0.8);
@@ -296,9 +299,14 @@ function appearanceHarness({ stored, denied = false } = {}) {
 const flushPromises = () => new Promise((resolve) => setImmediate(resolve));
 test('first paint restores theme and waits for both fonts and reader readiness', async () => {
   const page = appearanceHarness({
-    stored: JSON.stringify({ version: 1, theme: 'dark' }),
+    stored: JSON.stringify({
+      version: 1,
+      theme: 'dark',
+      background: 'pattern',
+    }),
   });
   assert.equal(page.dataset.theme, 'dark');
+  assert.equal(page.dataset.background, 'pattern');
   page.ready();
   assert.equal(page.dataset.boot, 'loading');
   page.loaded();
@@ -309,6 +317,7 @@ test('first paint restores theme and waits for both fonts and reader readiness',
 test('font failure reveals a stable fallback; late fonts cannot replace it', async () => {
   const page = appearanceHarness({ denied: true });
   assert.equal(page.dataset.theme, 'light');
+  assert.equal(page.dataset.background, 'plain');
   page.ready();
   page.timeout();
   assert.equal(page.dataset.boot, 'ready');
@@ -402,4 +411,53 @@ test('Escape opens collections only outside dialogs and replaces Alt+L', () => {
   ])
     assert.equal(keyboardAction({ key: 'Escape', [flag]: true }), null);
   assert.equal(keyboardAction({ key: 'l', code: 'KeyL', altKey: true }), null);
+});
+
+test('a remembrance keeps a distinct place in every collection it belongs to', () => {
+  const groups = new Set(['morning', 'evening', 'sleep']);
+  const taken = new Map();
+  assert.deepEqual(
+    validatePlacement({ morning: 8, sleep: 12 }, groups, taken),
+    [
+      ['morning', 8],
+      ['sleep', 12],
+    ],
+  );
+  assert.doesNotThrow(() => validatePlacement({ evening: 8 }, groups, taken));
+  assert.throws(() => validatePlacement({ morning: 8 }, groups, taken));
+  assert.throws(() => validatePlacement({ dawn: 1 }, groups, new Map()));
+  assert.throws(() => validatePlacement({ morning: 0 }, groups, new Map()));
+  assert.throws(() => validatePlacement({}, groups, new Map()));
+  assert.throws(() => validatePlacement(undefined, groups, new Map()));
+});
+
+test('added narration collections keep their own linked source pages', () => {
+  for (const source of ['ibnmajah:925', 'muslim:593a', 'bukhari:6311'])
+    assert.doesNotThrow(() =>
+      validateSource({ source, url: `https://sunnah.com/${source}` }),
+    );
+  assert.throws(() =>
+    validateSource({
+      source: 'hisn:77',
+      url: 'https://sunnah.com/hisn:77',
+    }),
+  );
+});
+
+test('the page pattern is opt-in and survives only as an exact stored value', () => {
+  for (const raw of [
+    null,
+    '{',
+    JSON.stringify({ version: 1 }),
+    JSON.stringify({ version: 1, background: 'Pattern' }),
+    JSON.stringify({ version: 1, background: true }),
+    JSON.stringify({ version: 0, background: 'pattern' }),
+  ])
+    assert.equal(parsePreferences(raw).background, 'plain');
+  assert.equal(
+    parsePreferences(JSON.stringify({ version: 1, background: 'pattern' }))
+      .background,
+    'pattern',
+  );
+  assert.equal(defaultPreferences().background, 'plain');
 });

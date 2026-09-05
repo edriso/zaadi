@@ -27,8 +27,14 @@ Upstream surah metadata credits the Quran.com API. The corpus SHA256 is pinned.
 Whole short surahs retain the original basmala prefix once, without modification.
 
 Hadith: classical Arabic remembrance texts from individually inspected Sunnah.com
+pages (Bukhari, Muslim, Abu Dawud, Ibn Majah) and named Dorar and Hisn al-Muslim author
 pages, attributed in data/sources.json and within the reader. No website translations
 or modern commentary are copied. Narration text is ancient public-domain material.
+Sunnah.com refuses automated requests, so pages were read as rendered text through a
+public reader proxy, and matn missing from that rendering was taken from the Arabic
+editions of the same Sunnah.com corpus mirrored at
+cdn.jsdelivr.net/gh/fawazahmed0/hadith-api and matched by in-book reference.
+See docs/content-policy.md.
 
 Cairo Variable and Amiri Quran fonts: SIL Open Font License 1.1.
 See public/licenses/cairo.txt and public/licenses/amiri-quran.txt.

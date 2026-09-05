@@ -6,18 +6,23 @@ import {
   useReducer,
   useMemo,
   useCallback,
+  type CSSProperties,
   type PointerEvent,
 } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
   Check,
+  ChevronDown,
+  Grid2x2,
   Heart,
   Minus,
+  Monitor,
   Moon,
   Plus,
   RotateCcw,
   SlidersHorizontal,
+  Square,
   Sun,
   Sunrise,
   Sunset,
@@ -50,6 +55,25 @@ const methodLabels: Record<string, string> = {
   MoonsightingCommittee: 'لجنة رؤية الهلال',
   Karachi: 'جامعة العلوم الإسلامية، كراتشي',
 };
+const collectionLabels: Record<string, string> = {
+  bukhari: 'صحيح البخاري',
+  muslim: 'صحيح مسلم',
+  abudawud: 'سنن أبي داود',
+  tirmidhi: 'جامع الترمذي',
+  nasai: 'سنن النسائي',
+  ibnmajah: 'سنن ابن ماجه',
+  targhib: 'صحيح الترغيب · الدرر السنية',
+  nataij: 'نتائج الأفكار · الدرر السنية',
+};
+const themeOptions = [
+  { value: 'light', label: 'فاتح', Icon: Sun },
+  { value: 'dark', label: 'داكن', Icon: Moon },
+  { value: 'system', label: 'الجهاز', Icon: Monitor },
+] as const;
+const backgroundOptions = [
+  { value: 'plain', label: 'سادة', Icon: Square },
+  { value: 'pattern', label: 'زخرفة', Icon: Grid2x2 },
+] as const;
 const icons: Record<string, typeof Sun> = {
   morning: Sunrise,
   evening: Sunset,
@@ -73,6 +97,7 @@ export function Reader() {
     zoom: 1,
     minimal: false,
     theme: 'light',
+    background: 'plain',
     city: '',
     method: '',
     hanafi: false,
@@ -98,8 +123,17 @@ export function Reader() {
   const base = useFitText(viewport, text, item.id);
   const count = counts[item.id] ?? 0,
     complete = item.count !== null && count >= item.count;
+  const last = index === selectedItems.length - 1;
   const Icon = icons[collection];
   const recommendation = now ? suggestion(now, preferences) : null;
+  // The hint stays one short line; the source panel carries the full wording.
+  const repetitions =
+    item.countLabel ||
+    (item.count === null
+      ? 'بلا عدد محدد'
+      : item.countKind === 'single-recitation'
+        ? 'قراءة واحدة'
+        : `${referenceNumber(item.count)} ${item.count === 3 ? 'مرات' : 'مرة'}`);
   useEffect(() => {
     let active = true;
     queueMicrotask(() => {
@@ -167,7 +201,7 @@ export function Reader() {
       );
     }
   }, [preferences, ready]);
-  useAppearance(ready, preferences.theme);
+  useAppearance(ready, preferences.theme, preferences.background);
   useEffect(() => {
     viewport.current?.scrollTo({ top: 0, behavior: 'auto' });
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -323,17 +357,21 @@ export function Reader() {
         انتقل إلى نص الذكر
       </button>
       <header className="reader-header">
+        <span className="wordmark">زادي</span>
         <button
-          className="icon-button"
-          aria-label="العودة إلى قائمة الأذكار"
+          className="collection-chip"
+          aria-label={`${group.title}، الذكر ${index + 1} من ${selectedItems.length}. افتح قائمة الأذكار`}
           aria-keyshortcuts="Escape"
           onClick={() => openPanel('list')}
         >
-          <ArrowRight size={21} />
+          <Icon size={18} aria-hidden="true" />
+          <span>{group.title}</span>
+          <span className="chip-count">
+            {referenceNumber(index + 1)} /{' '}
+            {referenceNumber(selectedItems.length)}
+          </span>
+          <ChevronDown size={15} aria-hidden="true" />
         </button>
-        <span className="wordmark">
-          زادي<span>ذكر يرافق يومك</span>
-        </span>
         <button
           className="icon-button"
           aria-label="إعدادات القراءة"
@@ -345,16 +383,6 @@ export function Reader() {
           <SlidersHorizontal size={20} />
         </button>
       </header>
-      <div className="collection-heading">
-        <Icon size={20} aria-hidden="true" />
-        <h1>{group.title}</h1>
-        <span aria-label={`الذكر ${index + 1} من ${selectedItems.length}`}>
-          {referenceNumber(index + 1)} / {referenceNumber(selectedItems.length)}
-        </span>
-      </div>
-      <button className="timing-note" onClick={() => openPanel('settings')}>
-        {openingNote || 'اقتراح بحسب الوقت · يمكنك اختيار مجموعة أخرى'}
-      </button>
       {/* oxlint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex -- A scrollable reading region must be focusable for keyboard scrolling; arrow keys provide the same navigation as visible buttons. */}
       <section
         className="reading-area"
@@ -399,17 +427,12 @@ export function Reader() {
         </button>
       </section>
       {/* oxlint-enable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex */}
-      <div className="reading-note">
-        <p>{item.title}</p>
+      <div className="reading-meta">
+        <p className="dhikr-title">{item.title}</p>
         <button className="source-button" onClick={() => openPanel('source')}>
-          المصدر
+          المصدر والتخريج
         </button>
       </div>
-      <p id="tap-hint" className="hint-line">
-        {item.count === null
-          ? 'اقرأ على مهل؛ الضغط على النص ينقلك للتالي'
-          : 'اضغط على الذكر لتسجيل قراءة؛ ننتقل للتالي عند اكتمال العدد'}
-      </p>
       <div className="counter-area">
         <div className="counter-row">
           <button
@@ -422,17 +445,22 @@ export function Reader() {
           </button>
           <button
             className={`count-button ${complete ? 'is-counted' : ''}`}
-            disabled={
-              (complete || item.count === null) &&
-              index === selectedItems.length - 1
+            style={
+              {
+                '--progress':
+                  item.count && item.count > 1
+                    ? `${Math.min(100, (count / item.count) * 100)}%`
+                    : '0%',
+              } as CSSProperties
             }
+            disabled={(complete || item.count === null) && last}
             onClick={recordReading}
             onKeyDown={(event) => {
               if (event.repeat && (event.key === 'Enter' || event.key === ' '))
                 event.preventDefault();
             }}
           >
-            {complete && index === selectedItems.length - 1 ? (
+            {complete && last ? (
               <>
                 <Check size={19} />
                 {item.count === 1 ? 'تمت القراءة' : 'اكتمل العدد'}
@@ -452,14 +480,13 @@ export function Reader() {
           </button>
           <span className="counter-balance" aria-hidden="true" />
         </div>
-        <p className="counter-label">
+        <p id="tap-hint" className="hint-line">
+          {repetitions} ·{' '}
           {item.count === null
-            ? 'ذكر مطلق؛ لا عدد محدد في الرواية'
+            ? 'اضغط على النص للانتقال'
             : item.countKind === 'single-recitation'
-              ? 'قراءة واحدة؛ دون تكرار معدود في الرواية'
-              : item.id === 'daily-tasbih'
-                ? 'مئة مرة في اليوم'
-                : `${referenceNumber(item.count)} ${item.count === 3 ? 'مرات' : 'مرة'}`}
+              ? 'اضغط على النص لتسجيلها'
+              : 'اضغط على النص لتسجيل قراءة'}
         </p>
       </div>
       <output
@@ -472,7 +499,7 @@ export function Reader() {
         }
       >
         {item.count === null
-          ? index === selectedItems.length - 1
+          ? last
             ? 'آخر ذكر'
             : ''
           : complete
@@ -481,18 +508,13 @@ export function Reader() {
       </output>
       <footer className="reader-footer">
         <button
-          disabled={index === selectedItems.length - 1}
+          disabled={last}
           onClick={() => navigate(1)}
           aria-keyshortcuts="ArrowRight"
         >
           <ArrowRight size={19} aria-hidden="true" />
           التالي
         </button>
-        <span>
-          {index === selectedItems.length - 1
-            ? 'آخر ذكر في المجموعة'
-            : 'اسحب لليمين للتالي'}
-        </span>
         <button
           disabled={index === 0}
           onClick={() => navigate(-1)}
@@ -558,9 +580,13 @@ export function Reader() {
               {collections.map((value) => {
                 const GroupIcon = icons[value.id];
                 return (
-                  <button key={value.id} onClick={() => choose(value.id)}>
+                  <button
+                    key={value.id}
+                    aria-current={value.id === collection}
+                    onClick={() => choose(value.id)}
+                  >
                     <span className="collection-icon">
-                      <GroupIcon size={23} />
+                      <GroupIcon size={21} />
                     </span>
                     <span>
                       <strong>{value.title}</strong>
@@ -575,8 +601,8 @@ export function Reader() {
               })}
             </div>
             <p className="small-note">
-              اختيار مجموعة يبدأ قراءة جديدة. الأعداد لا تُحفظ بعد إغلاق الصفحة،
-              وليست سجلًا للعبادة.
+              {openingNote}. اختيار مجموعة يبدأ قراءة جديدة، والأعداد لا تُحفظ بعد
+              إغلاق الصفحة وليست سجلًا للعبادة.
             </p>
           </>
         )}
@@ -584,6 +610,58 @@ export function Reader() {
           <>
             <section className="setting-section">
               <h3>المظهر</h3>
+              <fieldset className="setting-group">
+                <legend>لون الواجهة</legend>
+                <div className="segmented">
+                  {themeOptions.map(({ value, label, Icon: ThemeIcon }) => (
+                    <label key={value}>
+                      <input
+                        type="radio"
+                        name="theme"
+                        value={value}
+                        checked={preferences.theme === value}
+                        onChange={() =>
+                          setPreferences((current) => ({
+                            ...current,
+                            theme: value,
+                          }))
+                        }
+                      />
+                      <ThemeIcon size={16} aria-hidden="true" />
+                      {label}
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+              <fieldset className="setting-group">
+                <legend>خلفية الصفحة</legend>
+                <div className="segmented">
+                  {backgroundOptions.map(
+                    ({ value, label, Icon: BackgroundIcon }) => (
+                      <label key={value}>
+                        <input
+                          type="radio"
+                          name="background"
+                          value={value}
+                          checked={preferences.background === value}
+                          onChange={() =>
+                            setPreferences((current) => ({
+                              ...current,
+                              background: value,
+                            }))
+                          }
+                        />
+                        <BackgroundIcon size={16} aria-hidden="true" />
+                        {label}
+                      </label>
+                    ),
+                  )}
+                </div>
+              </fieldset>
+              <p className="small-note">
+                زخرفة هادئة خلف النص، أو خلفية سادة كما هي. النص وحجمه لا
+                يتغيران.
+              </p>
               <label className="checkbox-label" htmlFor="minimal">
                 <input
                   id="minimal"
@@ -604,21 +682,6 @@ export function Reader() {
                 قراءة، واسحب لليمين للتالي أو لليسار للسابق. يمكنك إظهار الواجهة
                 كاملة من هنا متى شئت.
               </p>
-              <label htmlFor="theme">لون الواجهة</label>
-              <select
-                id="theme"
-                value={preferences.theme}
-                onChange={(event) =>
-                  setPreferences((current) => ({
-                    ...current,
-                    theme: event.target.value as Preferences['theme'],
-                  }))
-                }
-              >
-                <option value="light">فاتح</option>
-                <option value="dark">داكن</option>
-                <option value="system">بحسب إعداد الجهاز</option>
-              </select>
             </section>
             <section className="setting-section">
               <h3>أدوات القراءة</h3>
@@ -646,6 +709,10 @@ export function Reader() {
                   التراجع عن آخر قراءة
                 </button>
               </div>
+              <p className="small-note">
+                اسحب لليمين للذكر التالي، ولليسار للسابق. زرّا «التالي» و«السابق»
+                أسفل الشاشة يفعلان الشيء نفسه.
+              </p>
             </section>
             <section className="setting-section">
               <h3>حجم النص</h3>
@@ -860,18 +927,8 @@ export function Reader() {
             >
               اقرأ المصدر والتخريج{' '}
               <span>
-                {
-                  (
-                    {
-                      bukhari: 'صحيح البخاري',
-                      muslim: 'صحيح مسلم',
-                      abudawud: 'سنن أبي داود',
-                      targhib: 'صحيح الترغيب · الدرر السنية',
-                      nataij: 'نتائج الأفكار · الدرر السنية',
-                    } as Record<string, string>
-                  )[item.source.split(':')[0]]
-                }{' '}
-                · <bdi>{referenceNumber(item.source.split(':')[1])}</bdi>
+                {collectionLabels[item.source.split(':')[0]]} ·{' '}
+                <bdi>{referenceNumber(item.source.split(':')[1])}</bdi>
               </span>
               <ExternalLink size={16} />
             </a>

@@ -51,9 +51,30 @@ export function validateSource(source) {
       'Unverified source destination',
     );
   } else {
-    assert.match(source.source, /^(bukhari|muslim|abudawud):\d+[a-z]?$/);
+    assert.match(
+      source.source,
+      /^(bukhari|muslim|abudawud|tirmidhi|nasai|ibnmajah):\d+[a-z]?$/,
+    );
     assert.equal(source.url, `https://sunnah.com/${source.source}`);
   }
+}
+/**
+ * Each remembrance names the collections it belongs to and its position in
+ * every one of them, because the same text sits at a different point in the
+ * morning sequence than in the bedtime sequence.
+ */
+export function validatePlacement(groups, groupIds, seen) {
+  const entries = Object.entries(groups ?? {});
+  assert.ok(entries.length, 'Remembrance belongs to no collection');
+  for (const [group, position] of entries) {
+    assert.ok(groupIds.has(group), `Invalid collection ${group}`);
+    assert.ok(Number.isInteger(position) && position > 0, 'Invalid position');
+    const taken = seen.get(group) ?? new Set();
+    assert.ok(!taken.has(position), `Duplicate position ${group}:${position}`);
+    taken.add(position);
+    seen.set(group, taken);
+  }
+  return entries;
 }
 export function buildContent() {
   const manifest = read('data/integrity.json');
@@ -82,6 +103,7 @@ export function buildContent() {
   assert.equal(groupIds.size, collections.length);
   const items = [];
   const ids = new Set();
+  const positions = new Map();
   for (const source of read('data/sources.json').items) {
     assert.ok(!ids.has(source.id), 'Duplicate remembrance ID');
     ids.add(source.id);
@@ -99,31 +121,30 @@ export function buildContent() {
         `Missing ${key}`,
       );
     validateSource(source);
-    assert.ok(
-      source.groups.length &&
-        source.groups.every((group) => groupIds.has(group)),
-      'Invalid collection',
-    );
+    const placement = validatePlacement(source.groups, groupIds, positions);
     const basic = {
       id: source.id,
       title: source.title,
-      groups: source.groups,
+      groups: placement.map(([group]) => group),
+      positions: placement.map(([, position]) => position),
       source: source.source,
       url: source.url,
       narrator: source.narrator,
       grade: source.grade,
       context: source.context,
       countKind: source.countKind,
+      countLabel: source.countLabel ?? '',
     };
     if (source.id === 'post-prayer-istighfar')
       basic.context += ' وصيغة الاستغفار هنا بيّنها الأوزاعي في الرواية.';
     if (source.segments)
       source.segments.forEach((segment, index) => {
         validateCount(segment.count, source.countKind);
+        assert.ok(segment.title && segment.text, 'Incomplete segment');
         items.push({
           ...basic,
           id: `${source.id}-${index}`,
-          title: ['التسبيح', 'التحميد', 'التكبير', 'تمام المئة'][index],
+          title: segment.title,
           text: segment.text,
           count: segment.count,
           quran: [],
@@ -155,17 +176,17 @@ export function buildContent() {
       });
     }
   }
-  for (const group of collections)
-    assert.ok(
-      items.some((item) => item.groups.includes(group.id)),
-      `Empty collection ${group.id}`,
-    );
+  const sizes = collections.map((group) => {
+    const size = items.filter((item) => item.groups.includes(group.id)).length;
+    assert.ok(size, `Empty collection ${group.id}`);
+    return `${group.id} ${size}`;
+  });
   writeFileSync(
     'content/azkar.generated.json',
     JSON.stringify({ collections, items }, null, 2) + '\n',
   );
   console.log(
-    `Verified ${items.length} reading cards across ${collections.length} collections.`,
+    `Verified ${items.length} reading cards across ${collections.length} collections: ${sizes.join(', ')}.`,
   );
 }
 if (process.argv[1]?.endsWith('/content.mjs')) buildContent();
