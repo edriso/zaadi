@@ -2,10 +2,11 @@
 
 - Source researcher inspected the Arabic source pages and repetition contexts before
   data import. The pipeline verifies the pinned records and unmodified Quran corpus.
-- Fourteen focused tests pass: time-window boundaries, local city calculations, invalid
+- Twenty-one focused tests pass: time-window boundaries, local city calculations, invalid
   stored settings, zoom bounds, swipe direction, ignored gestures, bounded navigation,
   narration suffixes, Quran ranges, unrestricted-count protection, keyboard guards, and
-  exact allowlisted source destinations.
+  exact allowlisted source destinations, theme migration, atomic count/advance/undo,
+  tap intent, and font-loading/failure gates.
 - The original timing tests also passed with the process timezone changed to America/New_York; the Cairo
   calculation still selects morning from the same absolute instant.
 - Strict TypeScript and lint pass. The only accessibility lint exceptions are the
@@ -26,6 +27,18 @@
   displays the expected Muslim reference and single-reading explanation.
 - Expanded to 16 morning and 15 evening cards with inspected timing/count evidence.
   Source variants and deferred candidates are recorded in data/sources.json.
+
+- New appearance/interaction checks in the production export: dark mode persists on
+  refresh; the reader and settings have consistent dark surfaces and readable text.
+  Clicking text advances single readings; Enter/Space count all three repetitions
+  before advancing and preserve focus. Undo restores the prior card/count. Right
+  advances and Left returns, including after undo.
+- At 390×844 in Brave device emulation: the long opening prayer fits; a rightward
+  touch swipe advances without counting, a text tap records exactly one repetition,
+  and a vertical gesture leaves the count and card unchanged.
+- First-paint tests simulate slow/failed fonts, late font completion, malformed or denied
+  storage, and missing reader initialization. Static checks verify the three font preloads
+  and app icon. Refresh was visually inspected; no network-throttled filmstrip was captured.
 
 Not verified:
 

@@ -1,7 +1,7 @@
 # زادي
 
 A quiet, mobile-first Arabic remembrance reader. One dhikr per screen, white surfaces,
-generous space, local fonts, bounded text size, and sources for every text and count.
+generous space, light/dark themes, local fonts, bounded text size, and sources for every text and count.
 
 ## Run
 
@@ -34,15 +34,18 @@ BASE_PATH=/zaadi npm run preview
   navigation windows, not religious deadlines. Method and Asr convention are editable.
 - After-prayer and bedtime collections are selected manually, never inferred from time.
 - Swipe right for next / left for previous. Visible labelled arrow buttons and keyboard
-  Left/Right are alternatives. Vertical scroll, selection and multitouch do not navigate.
+  Right (next) / Left (previous) are alternatives. Vertical scroll, selection and multitouch do not navigate.
 - Tab moves through controls. Left/Right work from the page; Home/End jump to the first/last
   item and Enter counts when the text is focused. Escape closes panels and restores focus.
   Settings include an Arabic keyboard guide; shortcuts respect text selection and editing.
 - Text fits between 18–42px at default size; user scale is 80–160%, with an absolute
   16px minimum. Large or long text scrolls. Short landscape windows allow page scrolling.
   Native browser zoom remains enabled.
-- The counter follows the narrated count, has undo, and never advances automatically.
+- The text and read button record one repetition, then advance when the narrated count
+  is complete. Undo restores the previous count and card; the last card never wraps.
   A single-read label differs from prescribed repetition. Unrestricted dhikr has no target.
+- Settings offer light, dark, or system appearance. Theme is applied before first paint.
+  Fonts preload before the reader appears; failed loading has a bounded, stable fallback.
 - Preferences stay in localStorage. Counts stay in memory only and reset when choosing
   a collection/reloading; they are not a daily total or proof of recitation.
 
@@ -55,7 +58,7 @@ book of adhkar. Text, attribution, authenticity and count context are stored sep
 app/                  static page, layout, white responsive CSS
 components/reader/    reader and native dialog panel
 content/              collection definitions and generated reading cards
-lib/                  pure timing/gesture/preferences logic and reader hooks
+lib/                  timing, reading state, gestures, font/theme bootstrap and hooks
 data/                 pinned Quran corpus, source research and checksums
 scripts/              source checks, tests, Pages output preparation and local preview
 docs/                 content policy, architecture and verification notes

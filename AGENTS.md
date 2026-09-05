@@ -24,16 +24,28 @@ Correctness, readable Arabic, and a quiet reading experience come first.
 
 - app/: static route/layout; components/reader/: reader, panels; content/: collection
   definitions; data/: source texts/corpus; lib/: pure logic; scripts/: checks; docs/: guides.
-- Keep mobile first, white, spacious, Arabic RTL. One remembrance at a time.
+- Keep mobile first, spacious, Arabic RTL. Light mode starts white; offer dark and
+  system themes using shared color tokens. One remembrance at a time.
 - Use 100dvh with safe-area padding. Fit text only within safe readable bounds.
   User text zoom is limited and may require vertical scrolling. Never crop Arabic marks.
 - Quran: Amiri Quran, regular weight, line-height >=2.5. No Arabic letter spacing.
 - Keep browser pinch zoom available. Do not use user-scalable=no or maximum-scale.
-- Swipe left = previous, swipe right = next in RTL; arrows and labels must agree.
+- Right arrow/right swipe = next; left arrow/left swipe = previous (user preference).
+  Place Next on the right and Previous on the left; icons and help must agree.
   Vertical scroll, text selection, multitouch, controls and canceled gestures must not navigate.
+- The text is a labelled native button with a visible tap hint. Tap/click/Enter/Space
+  records one repetition and advances only when its target is met. Unrestricted texts
+  advance without inventing a count. The last card never wraps. Undo reverses a read
+  and its automatic advance. Keep the text button stable so keyboard focus survives.
+- Reject held keys, accidental rapid taps, long presses, selection and drags (including
+  out-and-back drags) as read actions. Track tap movement separately from swipe intent.
 - Every swipe action needs a visible button and a keyboard alternative. No invisible tap zones.
 - Native dialog panels need a label, Escape/backdrop dismissal and focus restoration.
-- Text size/location preferences may persist locally. Reading counts are session-only;
+- Preload versioned local font subsets before revealing the reader. Restore theme in
+  the head before first paint. Bound the loading gate and provide a stable fallback if
+  fonts/scripts fail; never leave a blank page or swap in late fonts after fallback.
+  Preserve no-JavaScript readability and respect reduced motion.
+- Text size/location/theme preferences may persist locally. Reading counts are session-only;
   revisiting a new occasion starts fresh. No external religious API at runtime.
 - Keep dependencies purposeful, package lock checked in, scripts reproducible.
 
