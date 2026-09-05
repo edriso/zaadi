@@ -7,6 +7,7 @@ SPA rewrite rules. The collection list, bounded text size settings, and sources 
 native dialog panels. There is no marketing page, account, or backend.
 
 ## Decisions
+
 - The viewport has header, flexible reading area, and bottom navigation. Only the
   reading area scrolls when the text cannot fit within readable font-size bounds.
 - Text is measured after local fonts load and on container resize. User zoom multiplies
@@ -19,6 +20,7 @@ native dialog panels. There is no marketing page, account, or backend.
 - Each source and count is verified offline at build time against pinned records.
 
 ## Milestones
+
 1. Source research and content schema; reader and navigation rules.
 2. Viewport reader, settings, local timing, repeat controls and collection picker.
 3. Focused logic checks, production/static validation and GitHub Pages workflow.

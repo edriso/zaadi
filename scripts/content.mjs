@@ -1,0 +1,151 @@
+import { readFileSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import assert from 'node:assert/strict';
+const read = (path) => JSON.parse(readFileSync(path, 'utf8'));
+export function resolveRefs(references, corpus) {
+  return references.flatMap((reference) => {
+    const match = /^(\d+):(\d+)(?:-(\d+))?$/.exec(reference);
+    assert.ok(match, `Invalid Quran reference: ${reference}`);
+    const [, surah, start, end] = match;
+    assert.ok(Number(end || start) >= Number(start), 'Reversed Quran range');
+    return Array.from(
+      { length: Number(end || start) - Number(start) + 1 },
+      (_, i) => {
+        const ayah = Number(start) + i,
+          text = corpus[`${surah}:${ayah}`];
+        assert.ok(text, `Missing Quran verse ${surah}:${ayah}`);
+        return { text, ayah, reference: `${surah}:${ayah}` };
+      },
+    );
+  });
+}
+export function validateCount(count, kind) {
+  assert.ok(
+    ['explicit', 'single-recitation', 'unrestricted'].includes(kind),
+    'Unknown count type',
+  );
+  if (kind === 'unrestricted')
+    assert.equal(count, null, 'Unrestricted remembrance has no target');
+  else {
+    assert.ok(
+      Number.isInteger(count) && count > 0 && count <= 100,
+      'Invalid count',
+    );
+    if (kind === 'single-recitation') assert.equal(count, 1);
+  }
+}
+export function buildContent() {
+  const manifest = read('data/integrity.json');
+  assert.deepEqual(Object.keys(manifest).sort(), [
+    'data/quran-uthmani.txt',
+    'data/sources.json',
+    'data/surah-names.json',
+  ]);
+  for (const [path, expected] of Object.entries(manifest))
+    assert.equal(
+      createHash('sha256').update(readFileSync(path)).digest('hex'),
+      expected,
+      `Changed source ${path}; verify before updating its digest`,
+    );
+  const corpus = {};
+  for (const line of readFileSync('data/quran-uthmani.txt', 'utf8').split(
+    '\n',
+  )) {
+    const m = /^(\d+)\|(\d+)\|(.+)$/.exec(line);
+    if (m) corpus[`${m[1]}:${m[2]}`] = m[3];
+  }
+  assert.equal(Object.keys(corpus).length, 6236);
+  const names = read('data/surah-names.json'),
+    collections = read('content/collections.json');
+  const groupIds = new Set(collections.map((group) => group.id));
+  assert.equal(groupIds.size, collections.length);
+  const items = [];
+  const ids = new Set();
+  for (const source of read('data/sources.json').items) {
+    assert.ok(!ids.has(source.id), 'Duplicate remembrance ID');
+    ids.add(source.id);
+    for (const key of [
+      'title',
+      'source',
+      'narrator',
+      'grade',
+      'context',
+      'url',
+      'inspectedAt',
+    ])
+      assert.ok(
+        typeof source[key] === 'string' && source[key].trim(),
+        `Missing ${key}`,
+      );
+    assert.equal(source.url, `https://sunnah.com/${source.source}`);
+    assert.match(source.source, /^(bukhari|muslim|abudawud):\d+[a-z]?$/);
+    assert.ok(
+      source.groups.length &&
+        source.groups.every((group) => groupIds.has(group)),
+      'Invalid collection',
+    );
+    const basic = {
+      id: source.id,
+      title: source.title,
+      groups: source.groups,
+      source: source.source,
+      url: source.url,
+      narrator: source.narrator,
+      grade: source.grade,
+      context: source.context,
+      countKind: source.countKind,
+    };
+    if (source.id === 'post-prayer-istighfar')
+      basic.context += ' وصيغة الاستغفار هنا بيّنها الأوزاعي في الرواية.';
+    if (source.segments)
+      source.segments.forEach((segment, index) => {
+        validateCount(segment.count, source.countKind);
+        items.push({
+          ...basic,
+          id: `${source.id}-${index}`,
+          title: ['التسبيح', 'التحميد', 'التكبير', 'تمام المئة'][index],
+          text: segment.text,
+          count: segment.count,
+          quran: [],
+        });
+      });
+    else if (source.quranRefs) {
+      validateCount(source.count, source.countKind);
+      source.quranRefs.forEach((ref, index) =>
+        items.push({
+          ...basic,
+          id: source.quranRefs.length > 1 ? `${source.id}-${index}` : source.id,
+          title:
+            source.quranRefs.length > 1
+              ? `سورة ${names[ref.split(':')[0]].name}`
+              : source.title,
+          text: '',
+          quran: resolveRefs([ref], corpus),
+          count: source.count,
+        }),
+      );
+    } else {
+      validateCount(source.count, source.countKind);
+      assert.ok(source.text);
+      items.push({
+        ...basic,
+        text: source.text,
+        quran: [],
+        count: source.count,
+      });
+    }
+  }
+  for (const group of collections)
+    assert.ok(
+      items.some((item) => item.groups.includes(group.id)),
+      `Empty collection ${group.id}`,
+    );
+  writeFileSync(
+    'content/azkar.generated.json',
+    JSON.stringify({ collections, items }, null, 2) + '\n',
+  );
+  console.log(
+    `Verified ${items.length} reading cards across ${collections.length} collections.`,
+  );
+}
+if (process.argv[1]?.endsWith('/content.mjs')) buildContent();

@@ -5,6 +5,7 @@ This is a small Arabic remembrance reader, not a fatwa service or a measure of f
 Correctness, readable Arabic, and a quiet reading experience come first.
 
 ## Religious content
+
 - Use simple Modern Standard Arabic and a respectful tone.
 - Never type Quran into UI or content records. Resolve verse references from the pinned
   Tanzil corpus, preserving every character and its attribution/license.
@@ -20,6 +21,7 @@ Correctness, readable Arabic, and a quiet reading experience come first.
   A count control reports the narrated repetitions; it does not score worship.
 
 ## App structure and interaction
+
 - app/: static route/layout; components/reader/: reader, panels; content/: collection
   definitions; data/: source texts/corpus; lib/: pure logic; scripts/: checks; docs/: guides.
 - Keep mobile first, white, spacious, Arabic RTL. One remembrance at a time.
@@ -36,6 +38,7 @@ Correctness, readable Arabic, and a quiet reading experience come first.
 - Keep dependencies purposeful, package lock checked in, scripts reproducible.
 
 ## Delivery
+
 - Run npm run check, npm run build and the static-output check before publishing.
 - Test timing boundaries, setting limits, gestures, invalid storage and source integrity.
 - GitHub Pages uses Actions, a repository-aware base path and static output only.
