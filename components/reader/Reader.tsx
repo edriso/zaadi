@@ -1,11 +1,5 @@
 'use client';
-import {
-  useEffect,
-  useRef,
-  useState,
-  type TouchEvent,
-  type KeyboardEvent,
-} from 'react';
+import { useEffect, useRef, useState, type TouchEvent } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
@@ -27,6 +21,7 @@ import { useFitText } from '@/lib/useFitText';
 import { useWebMcp } from '@/lib/useWebMcp';
 import {
   boundedIndex,
+  keyboardAction,
   cities,
   clampZoom,
   MAX_ZOOM,
@@ -245,28 +240,49 @@ export function Reader() {
     }
     gesture.current = null;
   };
-  const keyNavigate = (event: KeyboardEvent<HTMLElement>) => {
-    if (
-      panel ||
-      event.altKey ||
-      event.ctrlKey ||
-      event.metaKey ||
-      event.shiftKey
-    )
-      return;
-    if ((event.target as HTMLElement).closest('button,input,select,a,dialog'))
-      return;
-    if (event.key === 'ArrowLeft') {
+  useEffect(() => {
+    const onKey = (event: globalThis.KeyboardEvent) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      const action = keyboardAction(event, {
+        blocked:
+          !ready ||
+          Boolean(panel) ||
+          Boolean(window.getSelection()?.toString()) ||
+          Boolean(
+            target.closest(
+              'input,select,textarea,[contenteditable]:not([contenteditable="false"]),dialog,[role="slider"]',
+            ),
+          ),
+        reading: target === viewport.current,
+      });
+      if (!action) return;
       event.preventDefault();
-      navigate(1);
-    }
-    if (event.key === 'ArrowRight') {
-      event.preventDefault();
-      navigate(-1);
-    }
-  };
+      if (action === 'next' || action === 'previous') {
+        setIndex((value) =>
+          boundedIndex(value, action === 'next' ? 1 : -1, selectedItems.length),
+        );
+        viewport.current?.focus({ preventScroll: true });
+      }
+      if (action === 'first') setIndex(0);
+      if (action === 'last') setIndex(selectedItems.length - 1);
+      if (action === 'count' && item.count !== null)
+        setCounts((current) => ({
+          ...current,
+          [item.id]: Math.min(item.count!, (current[item.id] ?? 0) + 1),
+        }));
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [ready, panel, selectedItems.length, item.id, item.count]);
   return (
     <main className="reader">
+      <button
+        className="skip-reading"
+        onClick={() => viewport.current?.focus()}
+      >
+        انتقل إلى نص الذكر
+      </button>
       <header className="reader-header">
         <button
           className="icon-button"
@@ -300,9 +316,9 @@ export function Reader() {
       <section
         className="reading-area"
         ref={viewport}
-        onKeyDown={keyNavigate}
         tabIndex={0}
-        aria-label="نص الذكر؛ استخدم السهم الأيسر للتالي والأيمن للسابق"
+        aria-label="نص الذكر؛ السهم الأيسر للتالي، والأيمن للسابق، وEnter لتسجيل قراءة"
+        aria-keyshortcuts="ArrowLeft ArrowRight Home End Enter"
         onTouchStart={startSwipe}
         onTouchMove={moveSwipe}
         onTouchEnd={endSwipe}
@@ -608,6 +624,43 @@ export function Reader() {
               )}
             </section>
             <section className="setting-section">
+              <h3>لوحة المفاتيح</h3>
+              <p className="small-note">
+                استخدم Tab للتنقّل بين الأزرار، وShift + Tab للعودة. افتح الزر
+                المحدد بمفتاح Enter أو المسافة، وأغلق النافذة بمفتاح Escape.
+              </p>
+              <dl className="keyboard-help">
+                <div>
+                  <dt>
+                    <kbd>←</kbd> / <kbd>→</kbd>
+                  </dt>
+                  <dd>الذكر التالي / السابق</dd>
+                </div>
+                <div>
+                  <dt>
+                    <kbd>Home</kbd> / <kbd>End</kbd>
+                  </dt>
+                  <dd>أول ذكر / آخر ذكر، عند التركيز على النص</dd>
+                </div>
+                <div>
+                  <dt>
+                    <kbd>Enter</kbd>
+                  </dt>
+                  <dd>تسجيل قراءة، عند التركيز على النص</dd>
+                </div>
+                <div>
+                  <dt>
+                    <kbd>↑</kbd> / <kbd>↓</kbd>
+                  </dt>
+                  <dd>تمرير النص الطويل</dd>
+                </div>
+              </dl>
+              <p className="small-note">
+                ابدأ بزر «انتقل إلى نص الذكر» الذي يظهر عند الضغط على Tab. لا
+                تغيّر الاختصارات الأذكار أثناء فتح الإعدادات أو تحديد النص.
+              </p>
+            </section>
+            <section className="setting-section">
               <h3>الخصوصية والمصادر</h3>
               <p className="small-note">
                 تُحفظ هذه الإعدادات في هذا الجهاز فقط. لا نطلب موقعك الدقيق، ولا
@@ -648,6 +701,7 @@ export function Reader() {
                       bukhari: 'صحيح البخاري',
                       muslim: 'صحيح مسلم',
                       abudawud: 'سنن أبي داود',
+                      targhib: 'صحيح الترغيب · الدرر السنية',
                     } as Record<string, string>
                   )[item.source.split(':')[0]]
                 }{' '}

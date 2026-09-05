@@ -8,9 +8,15 @@ import {
   clampZoom,
   swipeDirection,
   boundedIndex,
+  keyboardAction,
   referenceNumber,
 } from '../lib/core.mjs';
-import { resolveRefs, validateCount, buildContent } from './content.mjs';
+import {
+  resolveRefs,
+  validateCount,
+  validateSource,
+  buildContent,
+} from './content.mjs';
 test('source corpus and every occasion/count validate', () => buildContent());
 test('clock fallback has explicit non-prayer windows', () => {
   assert.equal(approximateCollection(3), 'general');
@@ -111,4 +117,64 @@ test('unrestricted remembrance cannot acquire a prescribed target', () => {
   assert.throws(() => validateCount(3, 'unrestricted'));
   assert.throws(() => validateCount(0, 'explicit'));
   assert.throws(() => validateCount(3, 'single-recitation'));
+});
+
+test('keyboard navigation works from page controls without stealing activation or scroll', () => {
+  assert.equal(keyboardAction({ key: 'ArrowLeft' }), 'next');
+  assert.equal(keyboardAction({ key: 'ArrowRight' }), 'previous');
+  for (const key of [
+    'Enter',
+    ' ',
+    'Home',
+    'End',
+    'ArrowUp',
+    'ArrowDown',
+    'Tab',
+  ])
+    assert.equal(keyboardAction({ key }), null);
+  assert.equal(keyboardAction({ key: 'Enter' }, { reading: true }), 'count');
+  assert.equal(keyboardAction({ key: 'Home' }, { reading: true }), 'first');
+  assert.equal(keyboardAction({ key: 'End' }, { reading: true }), 'last');
+});
+test('keyboard shortcuts respect dialogs, editing, selection, modifiers and held keys', () => {
+  assert.equal(keyboardAction({ key: 'ArrowLeft' }, { blocked: true }), null);
+  for (const flag of [
+    'altKey',
+    'ctrlKey',
+    'metaKey',
+    'shiftKey',
+    'repeat',
+    'isComposing',
+    'defaultPrevented',
+  ]) {
+    assert.equal(keyboardAction({ key: 'ArrowLeft', [flag]: true }), null);
+    assert.equal(
+      keyboardAction({ key: 'Enter', [flag]: true }, { reading: true }),
+      null,
+    );
+  }
+});
+
+test('exceptional source links retain exact narration identity and trusted destination', () => {
+  assert.doesNotThrow(() =>
+    validateSource({
+      source: 'muslim:2709a',
+      url: 'https://sunnah.com/muslim:2708b',
+    }),
+  );
+  assert.doesNotThrow(() =>
+    validateSource({
+      source: 'targhib:662',
+      url: 'https://dorar.net/h/aNzgr7xS',
+    }),
+  );
+  assert.throws(() =>
+    validateSource({ source: 'targhib:662', url: 'https://example.com/' }),
+  );
+  assert.throws(() =>
+    validateSource({
+      source: 'bukhari:6306',
+      url: 'https://sunnah.com/bukhari:6307',
+    }),
+  );
 });

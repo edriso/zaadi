@@ -34,6 +34,19 @@ export function validateCount(count, kind) {
     if (kind === 'single-recitation') assert.equal(count, 1);
   }
 }
+export function validateSource(source) {
+  const verifiedLinks = {
+    'targhib:662': 'https://dorar.net/h/aNzgr7xS',
+    // Sunnah.com hosts these two narration numbers on one page.
+    'muslim:2709a': 'https://sunnah.com/muslim:2708b',
+  };
+  if (Object.hasOwn(verifiedLinks, source.source)) {
+    assert.equal(source.url, verifiedLinks[source.source]);
+  } else {
+    assert.match(source.source, /^(bukhari|muslim|abudawud):\d+[a-z]?$/);
+    assert.equal(source.url, `https://sunnah.com/${source.source}`);
+  }
+}
 export function buildContent() {
   const manifest = read('data/integrity.json');
   assert.deepEqual(Object.keys(manifest).sort(), [
@@ -77,8 +90,7 @@ export function buildContent() {
         typeof source[key] === 'string' && source[key].trim(),
         `Missing ${key}`,
       );
-    assert.equal(source.url, `https://sunnah.com/${source.source}`);
-    assert.match(source.source, /^(bukhari|muslim|abudawud):\d+[a-z]?$/);
+    validateSource(source);
     assert.ok(
       source.groups.length &&
         source.groups.every((group) => groupIds.has(group)),

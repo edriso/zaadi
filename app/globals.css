@@ -592,3 +592,45 @@ svg {
 .source-context {
   font-size: 1rem;
 }
+
+.reading-area:focus-visible {
+  outline: 2px solid var(--accent, #315f4c);
+  outline-offset: -3px;
+  border-radius: 12px;
+}
+.skip-reading {
+  position: fixed;
+  top: -100px;
+  inset-inline-start: 16px;
+  z-index: 10;
+  background: white;
+  border: 1px solid #315f4c;
+  border-radius: 10px;
+  padding: 12px 18px;
+}
+.skip-reading:focus {
+  top: max(12px, env(safe-area-inset-top));
+}
+.keyboard-help {
+  font-size: 13px;
+}
+.keyboard-help > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-block: 14px;
+}
+.keyboard-help dt {
+  flex-shrink: 0;
+  direction: ltr;
+}
+.keyboard-help dd {
+  margin: 0;
+}
+kbd {
+  font: inherit;
+  background: #f5f7f5;
+  border: 1px solid #dce3dd;
+  border-radius: 4px;
+  padding: 2px 6px;
+}
