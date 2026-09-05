@@ -44,6 +44,11 @@ BASE_PATH=/zaadi npm run preview
 - The text and read button record one repetition, then advance when the narrated count
   is complete. Undo restores the previous count and card; the last card never wraps.
   A single-read label differs from prescribed repetition. Unrestricted dhikr has no target.
+- Optional “واجهة مختصرة” hides headings, supporting text, and navigation/read buttons,
+  retaining the text, repetition count and settings button. Swipe and keyboard navigation
+  remain available. Sources, collection selection and undo are available in settings.
+- Alt+S opens settings, Alt+L opens collections, and Alt+Z undoes the last reading
+  (Option on Mac). Shortcuts do not override dialogs, typing or text selection.
 - Settings offer light, dark, or system appearance. Theme is applied before first paint.
   Fonts preload before the reader appears; failed loading has a bounded, stable fallback.
 - Preferences stay in localStorage. Counts stay in memory only and reset when choosing

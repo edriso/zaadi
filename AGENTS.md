@@ -39,13 +39,19 @@ Correctness, readable Arabic, and a quiet reading experience come first.
   and its automatic advance. Keep the text button stable so keyboard focus survives.
 - Reject held keys, accidental rapid taps, long presses, selection and drags (including
   out-and-back drags) as read actions. Track tap movement separately from swipe intent.
-- Every swipe action needs a visible button and a keyboard alternative. No invisible tap zones.
+- Default mode provides visible navigation buttons. The user's optional minimal mode
+  hides supporting text/buttons, including Next/Previous, but retains the text, repetition
+  count, and a 44px settings control. Settings must expose sources, undo and collections.
+  Swipes and keyboard navigation keep working; hidden controls must leave the Tab order.
+  Alt+S/L/Z (Option on Mac) open settings/list or undo, outside dialogs and editing fields.
+- No invisible tap zones. Preserve the user's opt-in minimal boolean across refresh;
+  older or invalid preferences default to the full interface.
 - Native dialog panels need a label, Escape/backdrop dismissal and focus restoration.
 - Preload versioned local font subsets before revealing the reader. Restore theme in
   the head before first paint. Bound the loading gate and provide a stable fallback if
   fonts/scripts fail; never leave a blank page or swap in late fonts after fallback.
   Preserve no-JavaScript readability and respect reduced motion.
-- Text size/location/theme preferences may persist locally. Reading counts are session-only;
+- Text size/location/theme/minimal-mode preferences may persist locally. Reading counts are session-only;
   revisiting a new occasion starts fresh. No external religious API at runtime.
 - Keep dependencies purposeful, package lock checked in, scripts reproducible.
 

@@ -704,3 +704,37 @@ kbd {
   margin-block: 2px 6px;
   color: var(--muted);
 }
+
+/* Opt-in focus mode retains a discoverable way back to all controls. */
+.minimal-count {
+  display: none;
+}
+.reader.is-minimal > .collection-heading,
+.reader.is-minimal > .timing-note,
+.reader.is-minimal > .reading-note,
+.reader.is-minimal > .hint-line,
+.reader.is-minimal > .counter-area,
+.reader.is-minimal > .reader-footer,
+.reader.is-minimal > .reader-progress,
+.reader.is-minimal .reader-header > .wordmark,
+.reader.is-minimal .reader-header > button:first-child {
+  display: none;
+}
+.reader.is-minimal .reader-header {
+  min-height: 76px;
+  justify-content: flex-end;
+}
+.reader.is-minimal .minimal-count {
+  display: block;
+  flex-shrink: 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.8rem;
+  min-height: 44px;
+  padding-block: 10px;
+}
+.reading-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+}

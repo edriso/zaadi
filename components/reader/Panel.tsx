@@ -13,6 +13,10 @@ export function Panel({
   children: ReactNode;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
+  const closeButton = useRef<HTMLButtonElement>(null);
+  useLayoutEffect(() => {
+    if (open) closeButton.current?.focus();
+  }, [open, title]);
   useLayoutEffect(() => {
     const dialog = ref.current;
     if (!dialog) return;
@@ -44,7 +48,12 @@ export function Panel({
     >
       <div className="panel-heading">
         <h2 id="panel-title">{title}</h2>
-        <button className="icon-button" aria-label="إغلاق" onClick={onClose}>
+        <button
+          ref={closeButton}
+          className="icon-button"
+          aria-label="إغلاق"
+          onClick={onClose}
+        >
           <X size={20} />
         </button>
       </div>

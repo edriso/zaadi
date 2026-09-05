@@ -71,6 +71,7 @@ export function Reader() {
   const { index, counts } = reading;
   const [preferences, setPreferences] = useState<Preferences>({
     zoom: 1,
+    minimal: false,
     theme: 'light',
     city: '',
     method: '',
@@ -90,6 +91,7 @@ export function Reader() {
   const gesture = useRef<Gesture | null>(null);
   const preferencesRef = useRef(preferences);
   const trigger = useRef<HTMLElement | null>(null);
+  const settingsButton = useRef<HTMLButtonElement>(null);
   const selectedItems = useMemo(() => getItems(collection), [collection]),
     item = selectedItems[index],
     group = collections.find((value) => value.id === collection)!;
@@ -177,15 +179,29 @@ export function Reader() {
   }, [item.id]);
   const closePanel = () => {
     setPanel(null);
-    requestAnimationFrame(() =>
-      trigger.current?.focus({ preventScroll: true }),
-    );
+    requestAnimationFrame(() => {
+      const previous = trigger.current;
+      const target =
+        previous?.isConnected && previous.getClientRects().length
+          ? previous
+          : settingsButton.current;
+      target?.focus({ preventScroll: true });
+    });
   };
-  const openPanel = (target: 'list' | 'settings' | 'source') => {
-    trigger.current = document.activeElement as HTMLElement;
-    setNow(new Date());
-    setPanel(target);
-  };
+  const openPanel = useCallback(
+    (target: 'list' | 'settings' | 'source') => {
+      if (!panel) {
+        const active = document.activeElement;
+        trigger.current =
+          active instanceof HTMLElement && active !== document.body
+            ? active
+            : settingsButton.current;
+      }
+      setNow(new Date());
+      setPanel(target);
+    },
+    [panel],
+  );
   const choose = (id: string, automatic = false) => {
     if (!collections.some((value) => value.id === id)) return;
     setCollection(id);
@@ -291,12 +307,14 @@ export function Reader() {
           items: selectedItems,
         });
       if (action === 'count') recordReading();
+      if (action === 'settings' || action === 'list') openPanel(action);
+      if (action === 'undo') dispatch({ type: 'undo' });
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [ready, panel, selectedItems, index, recordReading]);
+  }, [ready, panel, selectedItems, index, recordReading, openPanel]);
   return (
-    <main className="reader">
+    <main className={`reader${preferences.minimal ? ' is-minimal' : ''}`}>
       <button
         className="skip-reading"
         onClick={() => viewport.current?.focus()}
@@ -307,6 +325,7 @@ export function Reader() {
         <button
           className="icon-button"
           aria-label="العودة إلى قائمة الأذكار"
+          aria-keyshortcuts="Alt+l"
           onClick={() => openPanel('list')}
         >
           <ArrowRight size={21} />
@@ -317,6 +336,9 @@ export function Reader() {
         <button
           className="icon-button"
           aria-label="إعدادات القراءة"
+          title="إعدادات القراءة · Alt + S"
+          aria-keyshortcuts="Alt+s"
+          ref={settingsButton}
           onClick={() => openPanel('settings')}
         >
           <SlidersHorizontal size={20} />
@@ -439,6 +461,23 @@ export function Reader() {
                 : `${referenceNumber(item.count)} ${item.count === 3 ? 'مرات' : 'مرة'}`}
         </p>
       </div>
+      <output
+        className="minimal-count"
+        aria-live="off"
+        aria-label={
+          item.count === null
+            ? 'ذكر بلا عدد محدد'
+            : `قراءات مسجلة ${count} من ${item.count}`
+        }
+      >
+        {item.count === null
+          ? index === selectedItems.length - 1
+            ? 'آخر ذكر'
+            : ''
+          : complete
+            ? 'تمت القراءة'
+            : `${referenceNumber(count)} / ${referenceNumber(item.count)}`}
+      </output>
       <footer className="reader-footer">
         <button
           disabled={index === selectedItems.length - 1}
@@ -544,6 +583,26 @@ export function Reader() {
           <>
             <section className="setting-section">
               <h3>المظهر</h3>
+              <label className="checkbox-label" htmlFor="minimal">
+                <input
+                  id="minimal"
+                  type="checkbox"
+                  checked={preferences.minimal}
+                  aria-describedby="minimal-description"
+                  onChange={(event) =>
+                    setPreferences((current) => ({
+                      ...current,
+                      minimal: event.target.checked,
+                    }))
+                  }
+                />
+                واجهة مختصرة
+              </label>
+              <p id="minimal-description" className="small-note">
+                يظهر نص الذكر وعدّاده وزر الإعدادات فقط. اضغط على النص لتسجيل
+                قراءة، واسحب لليمين للتالي أو لليسار للسابق. يمكنك إظهار الواجهة
+                كاملة من هنا متى شئت.
+              </p>
               <label htmlFor="theme">لون الواجهة</label>
               <select
                 id="theme"
@@ -559,6 +618,33 @@ export function Reader() {
                 <option value="dark">داكن</option>
                 <option value="system">بحسب إعداد الجهاز</option>
               </select>
+            </section>
+            <section className="setting-section">
+              <h3>أدوات القراءة</h3>
+              <div className="reading-tools">
+                <button
+                  className="plain-button"
+                  onClick={() => openPanel('list')}
+                >
+                  قائمة الأذكار
+                </button>
+                <button
+                  className="plain-button"
+                  onClick={() => openPanel('source')}
+                >
+                  مصدر الذكر الحالي
+                </button>
+                <button
+                  className="plain-button"
+                  disabled={reading.history.length === 0}
+                  onClick={() => {
+                    dispatch({ type: 'undo' });
+                    closePanel();
+                  }}
+                >
+                  التراجع عن آخر قراءة
+                </button>
+              </div>
             </section>
             <section className="setting-section">
               <h3>حجم النص</h3>
@@ -683,6 +769,24 @@ export function Reader() {
               <dl className="keyboard-help">
                 <div>
                   <dt>
+                    <kbd>Alt + S</kbd>
+                  </dt>
+                  <dd>فتح الإعدادات</dd>
+                </div>
+                <div>
+                  <dt>
+                    <kbd>Alt + L</kbd>
+                  </dt>
+                  <dd>فتح قائمة الأذكار</dd>
+                </div>
+                <div>
+                  <dt>
+                    <kbd>Alt + Z</kbd>
+                  </dt>
+                  <dd>التراجع عن آخر قراءة</dd>
+                </div>
+                <div>
+                  <dt>
                     <kbd>→</kbd> / <kbd>←</kbd>
                   </dt>
                   <dd>الذكر التالي / السابق</dd>
@@ -707,8 +811,9 @@ export function Reader() {
                 </div>
               </dl>
               <p className="small-note">
-                ابدأ بزر «انتقل إلى نص الذكر» الذي يظهر عند الضغط على Tab. لا
-                تغيّر الاختصارات الأذكار أثناء فتح الإعدادات أو تحديد النص.
+                في أجهزة Mac استخدم Option بدل Alt. ابدأ بزر «انتقل إلى نص
+                الذكر» الذي يظهر عند الضغط على Tab. لا تغيّر الاختصارات الأذكار
+                أثناء فتح الإعدادات أو تحديد النص.
               </p>
             </section>
             <section className="setting-section">

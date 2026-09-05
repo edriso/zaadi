@@ -74,6 +74,7 @@ test('malformed stored values cannot break reading or bypass size bounds', () =>
     method: '',
     hanafi: false,
     theme: 'light',
+    minimal: false,
   });
   assert.equal(clampZoom(-1), 0.8);
   assert.equal(clampZoom(Infinity), 1);
@@ -323,4 +324,40 @@ test('missing reader script cannot leave the page hidden indefinitely', async ()
   assert.equal(page.dataset.boot, 'loading');
   page.timeout();
   assert.equal(page.dataset.boot, 'ready');
+});
+
+test('minimal mode is opt-in and accepts only a persisted boolean', () => {
+  for (const raw of [
+    null,
+    '{',
+    JSON.stringify({ version: 1 }),
+    JSON.stringify({ version: 1, minimal: 'true' }),
+  ])
+    assert.equal(parsePreferences(raw).minimal, false);
+  assert.equal(
+    parsePreferences(JSON.stringify({ version: 1, minimal: true })).minimal,
+    true,
+  );
+});
+test('panel and undo shortcuts use physical Alt keys and respect input guards', () => {
+  for (const [code, action] of [
+    ['KeyS', 'settings'],
+    ['KeyL', 'list'],
+    ['KeyZ', 'undo'],
+  ]) {
+    assert.equal(keyboardAction({ code, key: 'س', altKey: true }), action);
+    assert.equal(keyboardAction({ code, key: 's' }), null);
+    assert.equal(
+      keyboardAction({ code, altKey: true }, { blocked: true }),
+      null,
+    );
+    for (const flag of [
+      'ctrlKey',
+      'metaKey',
+      'shiftKey',
+      'repeat',
+      'isComposing',
+    ])
+      assert.equal(keyboardAction({ code, altKey: true, [flag]: true }), null);
+  }
 });
